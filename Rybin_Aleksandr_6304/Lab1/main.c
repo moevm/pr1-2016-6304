@@ -1,4 +1,6 @@
 #include <string.h>
+#include "print_str.h"
+#include "get_name.h"	
 	int main()
 		{
 		char name[80];
