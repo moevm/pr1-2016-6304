@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define SIZE 500 //определяем размер буфера
+#include <stdlib.h>
 
 void print(char* a, int len)
 {
@@ -56,10 +56,11 @@ int main()
             break;
             
 		default: //если символ текстовый
-			buffer[i] = c; //заносим символ в буфер
-			i++; 
+			
+			i++;
+			buffer=(char*)realloc(buffer, i*sizeof(char)); //перевыделяем память под следующий элемент в массиве
 			len = i; //длина массива - это номер последнего элемента
-		
+			buffer[i-1]=c; //заносим символ в буфер
 		}
 	}
 	printf("Количество предложений до %d и количество предложений после %d", m, n);
