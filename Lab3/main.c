@@ -5,50 +5,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_sentence(char* buf, int lenth);		// Печать предложения
+void print_sentence(char* buf, int lenth, int count);		// Печать предложения
 
 int main()
 {
 	int buf = 0;			// Переменная для посимвольного ввода
 	char* buffer = NULL;		// Массив для хранения текущего ввода
 
-	int lenth = 0;			// Длина текущего предложения
+	int count = 0;			// Длина буфера ввода
 	int n = 0;				// Количество предложений в изначальном тексте 
 	int m = 0;				// Количество предложений в отформатированном тексте
+	int lenth = 0;			// Длина текущего предложения
 
-	do						//	Посимвольный ввод
+	/* Поссимвольно считавание веденного текста до знака "!" */
+	while ((buf = getchar()) != '!')
 	{
-		buf = getchar();
+		buffer = (char*)realloc(buffer, sizeof(char)*(count + 1));
+		buffer[count++] = (char)buf;
+	}
 
-		if ((buf == '.') || (buf == ';'))
+	/* Форматирование текста */
+	for (int i = 0; i < count; i++)
+	{
+
+		if ((buffer[i] == '.') || (buffer[i] == ';'))
 		{
-			buffer[lenth++] = (char)buf;		// Записываем текущий символ
-			print_sentence(buffer, lenth);		// Печатаем очередное предложение
+			print_sentence(buffer, lenth, i);		// Печатаем очередное предложение
 
 			n++; m++;		// Увеличиваем оба счетчика
 			lenth = 0;		// Обнуляем длину текущего предложения
-
-			buffer = '\0';
 		}
 
-		else if (buf == '?')
+		else if (buffer[i] == '?')
 		{
-			lenth = 0;		// Обнуляем длину текущего предложение, потому что предложения с "?" отбрасываются
-			n++;		// Увеличиваем только счетчик до
+			n++;		// Увеличиваем только счетчик  предложений до
+			lenth = 0;		// Обнуляем длину текущего предложения
 		}
 
-		else if (((buf == '\t') && (lenth == 0)) || (buf == '\n'))
-		{
-			lenth = 0;		//	Обнуляем длину , потому что табуляция и символы новой строки ложны игнорироваться
-		}
+		/* Игнорируем табляцию и пробелы в начале предложения и символ новой строки */
+		else if (((buffer[i] == '\t') && (lenth == 0)) || (buffer[i] == '\n') || ((buffer[i] == ' ') && (lenth == 0)));
 
+		/* При встрече символа увеличиваем длину текущего предложения */
 		else
-		{
-			buffer = (char*)realloc(buffer, (lenth + 1) * sizeof(char));		// Увеличиваем память на один символ, чтобы записать его
-			buffer[lenth++] = (char)buf;		// Записываем текущий символ
-		}
+			lenth++;
 
-	} while (!(buf == '!'));
+	}
 
 	printf("Количество предложений до %d и количество предложений после %d \n", n, m);
 
@@ -59,9 +60,10 @@ int main()
 	return 0;
 }
 
-void print_sentence(char* buf, int lenth)
+void print_sentence(char* buf, int lenth, int i)
+/* Печать предложения. lenth - длина текущего преложения, i - текущая позиция при проходе по массиву */
 {
-	for (int i = (buf[0] == ' ') ? 1 : 0; i < lenth; i++)		// Пропускаем первый пробел в предложении
-		printf("%c", buf[i]);
+	for (int g = i - lenth; g <= i; g++)
+		printf("%c", buf[g]);
 	printf("\n");
 }
