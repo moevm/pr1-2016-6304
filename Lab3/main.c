@@ -9,24 +9,32 @@ void print_sentence(char* buf, int lenth, int count);		// Печать предложения
 
 int main()
 {
-	int buf = 0;			// Переменная для посимвольного ввода
-	char* buffer = NULL;		// Массив для хранения текущего ввода
+	char* buffer = (char*)malloc(sizeof(char)*100);		// Массив для хранения ввода
 
 	int count = 0;			// Длина буфера ввода
 	int n = 0;				// Количество предложений в изначальном тексте 
 	int m = 0;				// Количество предложений в отформатированном тексте
-	int lenth = 0;			// Длина текущего предложения
+
+	int  buf = 0;
 
 	/* Поссимвольно считавание веденного текста до знака "!" */
-	while ((buf = getchar()) != '!')
+	while ( (buf = getchar()) != '!')
 	{
-		buffer = (char*)realloc(buffer, sizeof(char)*(count + 1));
-		buffer[count++] = (char)buf;
+		/* Количество элементов заданное заранее, при исчерпании длины массива увеличивается в два раза */
+		int im_count = 100;		
+		
+		if (count >= im_count)
+		{
+			im_count *= 2;
+			buffer = (char*)realloc(buffer, sizeof(char)*im_count);
+		}
+			buffer[count++] = (char)buf;
 	}
 
 	/* Форматирование текста */
 	for (int i = 0; i < count; i++)
 	{
+		int lenth = 0;			// Длина текущего предложения
 
 		if ((buffer[i] == '.') || (buffer[i] == ';'))
 		{
