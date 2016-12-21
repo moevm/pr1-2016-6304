@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <locale.h>
 
 /* Структура "Музыкальная композиция */
 struct MusicalComposition {
@@ -33,4 +34,4 @@ int count(struct MusicalComposition*head);
 void print_names(struct MusicalComposition* head);
 
 /* Функция вставки 3 элементов после каждого нечетного в списке */
-void Add3El(struct MusicalComposition*head)
+void Add3El(struct MusicalComposition*head);
