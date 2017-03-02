@@ -1,0 +1,9 @@
+all:
+	course
+course: bigheader.h main.o f.o f.h struct.h
+	gcc main.o -o course main.o f.o
+	rm *.o
+main.o: main.c bigheader.h struct.h
+ 	gcc -c main.c 
+f.o:	f.c bigheader.h struct.h
+	gcc -c f.c
