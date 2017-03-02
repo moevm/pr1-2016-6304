@@ -1,0 +1,23 @@
+# Линковка всех файлов программы : всех функций работы со списком и меню управления. 
+Curs_Work : Spisok_Functions.o Spisok_AddFunsctions.o Spisok_RemoveFunctions.o Spisok_Menu.o
+	gcc -o Spisok_Functions.o Spisok_AddFunsctions.o Spisok_RemoveFunctions.o Spisok_Menu.o Spisok
+
+# Компиляция объектного файла общих функций списка
+Spisok_Functions.o : Spisok_Functions.cpp
+	gcc -c Spisok_Functions.cpp
+
+# Компиляция объектного файла функций добавления списка и элементов
+Spisok_AddFunsctions.o : Spisok_AddFunsctions.cpp
+	gcc -c Spisok_AddFunsctions.cpp
+
+# Компиляция объектного файла функций удаления элементов списка
+Spisok_RemoveFunctions.o : Spisok_RemoveFunctions.cpp
+	gcc -c Spisok_RemoveFunctions.cpp
+
+# Компиляция объектного файла меню работы со списком
+Spisok_Menu.o : Spisok_Menu.cpp
+	gcc -c Spisok_Menu.cpp
+
+# Очистка от объектных файлов после сборки проекта
+clean:
+	rm -rf *.o
