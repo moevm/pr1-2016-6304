@@ -4,7 +4,7 @@
 #include <math.h>
 #include <locale.h>
 
-struct Student { // структура, описывающая информацию в csv файлах
+struct Student { 
 	char last_name[20];
 	char first_name[20];
 	char fathers_name[20];
@@ -15,15 +15,15 @@ struct Student { // структура, описывающая информацию в csv файлах
 	struct	Student* next;
 };
 
-typedef struct Student Student; // спецификатор "typedef" делает новое имя типа
+typedef struct Student Student; 
 
-Student* createStudent(char* array) { // функция инициализации элемента списка
+Student* createStudent(char* array) { 
 	Student* new_Student = (Student*)malloc(sizeof(Student)); 
-	char** array_of_words = (char**)malloc(50 * sizeof(char*));
-	char* ptr = strtok(array, "; ,"); // разделение строки на лексемы
+	char* array_of_words[50];
+	char* ptr = strtok(array, "; ,"); // Г°Г Г§Г¤ГҐГ«ГҐГ­ГЁГҐ Г±ГІГ°Г®ГЄГЁ Г­Г  Г«ГҐГЄГ±ГҐГ¬Г»
 	int i = 0;
 	while (ptr) {
-		array_of_words[i++] = ptr;// заполнение массива лексемами 
+		array_of_words[i++] = ptr;// Г§Г ГЇГ®Г«Г­ГҐГ­ГЁГҐ Г¬Г Г±Г±ГЁГўГ  Г«ГҐГЄГ±ГҐГ¬Г Г¬ГЁ 
 		ptr = strtok(NULL, "; ,");
 	}
 
@@ -32,16 +32,15 @@ Student* createStudent(char* array) { // функция инициализации элемента списка
 	strcpy(new_Student->fathers_name, array_of_words[2]);
 	strcpy(new_Student->github, array_of_words[3]);
 	strcpy(new_Student->mail, array_of_words[4]);
-	new_Student->group = atoi(array_of_words[5]); // atoi преобразует char* в int
+	new_Student->group = atoi(array_of_words[5]); // atoi ГЇГ°ГҐГ®ГЎГ°Г Г§ГіГҐГІ char* Гў int
 
-	free(array_of_words);
 	return new_Student;
 }
 
-/*Функция чтения первой таблицы*/
+/*Г”ГіГ­ГЄГ¶ГЁГї Г·ГІГҐГ­ГЁГї ГЇГҐГ°ГўГ®Г© ГІГ ГЎГ«ГЁГ¶Г»*/
 Student* readingTable_1(FILE* table) {
-	char* array = (char*)malloc(500 * sizeof(char));
-	char** array_of_strings = (char**)malloc(50 * sizeof(char*));
+	char array[500];
+	char* array_of_strings[50];
 	int i = 0;
 	Student* current;
 	Student* prev;
@@ -64,16 +63,14 @@ Student* readingTable_1(FILE* table) {
 		}
 		i++;
 	}
-	free(array);
-	free(array_of_strings);
 	fclose(table);
 	return current;
 }
 
-/*Функция чтения второй таблицы*/
+/*Г”ГіГ­ГЄГ¶ГЁГї Г·ГІГҐГ­ГЁГї ГўГІГ®Г°Г®Г© ГІГ ГЎГ«ГЁГ¶Г»*/
 void readingTable_2(FILE* table, Student* head) {
-	char* array = (char*)malloc(500 * sizeof(char));
-	char** array_of_strings = (char**)malloc(50 * sizeof(char*));
+	char array[500];
+	char* array_of_strings[50];
 	int i = 0;
 	Student* current;
 	current = head;
@@ -98,12 +95,10 @@ void readingTable_2(FILE* table, Student* head) {
 		i++;
 
 	}
-	free(array);
-	free(array_of_strings);
 	fclose(table);
 }
 
-/*Функция нахождения максимальной оценки среди студентов*/
+/*Г”ГіГ­ГЄГ¶ГЁГї Г­Г ГµГ®Г¦Г¤ГҐГ­ГЁГї Г¬Г ГЄГ±ГЁГ¬Г Г«ГјГ­Г®Г© Г®Г¶ГҐГ­ГЄГЁ Г±Г°ГҐГ¤ГЁ Г±ГІГіГ¤ГҐГ­ГІГ®Гў*/
 int maxGrade(Student* head) {
 	int result = 0;
 	int max = 0;
@@ -116,7 +111,7 @@ int maxGrade(Student* head) {
 	return max;
 }
 
-/*Функция нахождения количества студентов, оценка которых ниже, чем 60% от максимальной оценки*/
+/*Г”ГіГ­ГЄГ¶ГЁГї Г­Г ГµГ®Г¦Г¤ГҐГ­ГЁГї ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ  Г±ГІГіГ¤ГҐГ­ГІГ®Гў, Г®Г¶ГҐГ­ГЄГ  ГЄГ®ГІГ®Г°Г»Гµ Г­ГЁГ¦ГҐ, Г·ГҐГ¬ 60% Г®ГІ Г¬Г ГЄГ±ГЁГ¬Г Г«ГјГ­Г®Г© Г®Г¶ГҐГ­ГЄГЁ*/
 int badGrades(Student* head) {
 	int counter = 0;
 	int max = maxGrade(head)*0.6;
