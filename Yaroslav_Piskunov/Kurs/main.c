@@ -13,7 +13,7 @@ Lab Work №3 - File System */
 char* FindString(char* path) {  //Function for taking string from file
 
     FILE* file = fopen(path, "r");
-    char* string = (char*)malloc(1000*sizeof(char));
+    char string[1000] ;
     fgets(string, 1000, file);
     return string;
 }
@@ -83,7 +83,7 @@ int* sort_index (int* array, int size) { //Function creates the copy of massive,
     qsort (copy, size, sizeof(int), comparator);
     index = set_relativity(array, copy, size);
 
-   // free(copy);
+    free(copy);
     return index;
 }
 
