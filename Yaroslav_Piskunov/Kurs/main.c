@@ -5,6 +5,7 @@ CourseWork - Matrix Multiplier - main file*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "functions.h"
  
 #define MAX_FILESIZE 10000
 
@@ -41,8 +42,8 @@ while ((ch = fgetc(in_file))!=EOF)
 PrimalString[i++] = ch;
 PrimalString[i-1] = '\0';
  
-char* matrixString1 = getMatrix1(PrimalString);
-char* matrixString2 = getMatrix2(PrimalString);
+char* matrixString1 = (char*)getMatrix1(PrimalString);
+char* matrixString2 = (char*)getMatrix2(PrimalString);
  
 int* data = SizeAndValid(matrixString1, matrixString2); 
 switch (data[4]) {

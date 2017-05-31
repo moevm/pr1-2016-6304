@@ -4,6 +4,7 @@ Course Work - Matrix Multiplier - functions file*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "functions.h"
  
 #define MAX_FILESIZE 10000
 
@@ -22,7 +23,7 @@ string[i] = '\n';
 
 
 
-char** m = (char*)malloc(strings*colomns*sizeof(char));
+char** m = (char**)malloc(strings*colomns*sizeof(char*));
 m[0] = strtok(string, "\n" );
 
 for (i=1; i<strings*colomns; i++)
