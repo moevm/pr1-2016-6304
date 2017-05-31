@@ -113,7 +113,7 @@ Colomns2++;
 Colomns2 = Colomns2 / Strings2;
 
 
-int* dataArray = (int*)malloc(5*sizeof(int));
+int dataArray[5];
 dataArray[4] = checkValid(Colomns1, Strings1, Colomns2, Strings2, elements1, elements2);
 dataArray[0] = Colomns1;
 dataArray[1] = Strings1;
