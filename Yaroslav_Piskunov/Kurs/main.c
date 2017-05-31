@@ -17,13 +17,13 @@ int main () {
 printf("Matrix Multiplier v1.0\n");
 printf("Hello, please enter path to the input file\n");
  
-char* in_path = (char*)malloc(10000*sizeof(char));
+char in_path[10000];
 fgets(in_path, 10000, stdin);
 *(strchr(in_path, '\n')) = '\0';
  
 printf("Now enter path to the output file\n");
  
-char* out_path = (char*)malloc(10000*sizeof(char));
+char out_path[10000];
 fgets(out_path, 10000, stdin);
 *(strchr(out_path, '\n')) = '\0';
  
@@ -36,7 +36,7 @@ return 0;
  
 char ch;
 int i = 0;
-char* PrimalString = (char*)malloc(10000*sizeof(char));
+char PrimalString[10000];
  
 while ((ch = fgetc(in_file))!=EOF)
 PrimalString[i++] = ch;
