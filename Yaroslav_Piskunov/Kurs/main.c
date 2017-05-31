@@ -126,11 +126,13 @@ int main() {
 
     int* index = (int*)malloc(size*sizeof(int));
     index = sort_index(array_of_num, size);
-
+    
+    FILE* out = fopen ("./OutPut", "wb");
+    
     int j;
     for(i=0;i<size; i++) {
         j = index[i];
-        printf("%s", array_of_str[j]);
+        fprintf(out, "%s", array_of_str[j]);
     }
 
    free(index); 
