@@ -15,7 +15,7 @@ char* FindString(char* path) {  //Function for taking string from file
     FILE* file = fopen(path, "r");
     char* string = (char*)malloc(1000*sizeof(char));
     fgets(string, 1000, file);
-    return(string);
+    return string;
 }
 
 int recTreePathFinding (char* path, int* iterator, char** primal_array) { //Function for walking through file tree.
@@ -39,12 +39,12 @@ int recTreePathFinding (char* path, int* iterator, char** primal_array) { //Func
             }
             if ((de->d_type == DT_DIR)&&(strcmp(de->d_name, ".")!=0)&&(strcmp(de->d_name, "..")!=0)){
             /* In case of finding directory recursively open it */
-            int backup = strlen(path);
-            strcat(path, "/");
-            strcat(path, de->d_name);
+                int backup = strlen(path);
+                strcat(path, "/");
+                strcat(path, de->d_name);
 
-            recTreePathFinding(path, iterator, primal_array);
-            path[backup] = '\0';
+                recTreePathFinding(path, iterator, primal_array);
+                path[backup] = '\0';
             }
             de = readdir(directory);
         }
@@ -62,13 +62,13 @@ int* set_relativity (int* array, int* copy_of_array, int size){ //Function wich 
     int* index = (int*)malloc(size*sizeof(int));
     int i, j;
                                                                                                                    
-for(i=0;i<size; i++) {
-    j=0;
-    while (array[i]!=copy_of_array[j])
-        j++;
-    index[j] = i;
+    for(i=0;i<size; i++) {
+        j=0;
+        while (array[i]!=copy_of_array[j])
+            j++;
+            index[j] = i;
     }
-    return (index);
+return index;
 }
 
 
@@ -84,7 +84,7 @@ int* sort_index (int* array, int size) { //Function creates the copy of massive,
     index = set_relativity(array, copy, size);
 
    // free(copy);
-    return (index);
+    return index;
 }
 
 int take_number (char* line) { //Founction cuts string and returns number in the begining of it
@@ -92,7 +92,7 @@ int take_number (char* line) { //Founction cuts string and returns number in the
  char* number = (char*)malloc(strlen(line)*sizeof(char));
  number = strtok(line, " ");
 
- return(atoi(number));
+ return atoi(number);
 }
 
 char* take_str (char* line) { //Function cuts string and returns string after number
@@ -107,7 +107,7 @@ char* take_str (char* line) { //Function cuts string and returns string after nu
 }
 
 int main() {
-    char** primal_array = (char**)malloc(1000*sizeof(char*)); //Memory for strings taken from files
+    char** primal_array[1000]; //Memory for strings taken from files
 
     int i = 0;
     char path[10000] = ".";
@@ -120,8 +120,8 @@ int main() {
 
     printf("all strings sucsessfully found\n");
     for(i=0; i<size; i++){
-    array_of_str[i] = take_str(primal_array[i]);
-    array_of_num[i] = take_number(primal_array[i]);
+        array_of_str[i] = take_str(primal_array[i]);
+        array_of_num[i] = take_number(primal_array[i]);
     }
 
     int* index = (int*)malloc(size*sizeof(int));
@@ -129,15 +129,18 @@ int main() {
 
     int j;
     for(i=0;i<size; i++) {
-    j = index[i];
-    printf("%s", array_of_str[j]);
+        j = index[i];
+        printf("%s", array_of_str[j]);
     }
 
-   free(index); free(array_of_num);
+   free(index); 
+   free(array_of_num);
+    
    for (i=0; i<size; i++){
-   free(primal_array[i]);
-   free(array_of_str[i]);
+        free(primal_array[i]);
+        free(array_of_str[i]);
    }
+    
    free(array_of_str);
    free(primal_array);
   return 0;
