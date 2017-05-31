@@ -73,6 +73,8 @@ char **BmpSwap(char **raster, int x0, int y0, int x1, int y1)
 	int i,j;
 	int x=(x1+x0)/2; //х координата половины области
 	int y=(y0+y1)/2; //y координата половины области
+	int weight=(x1-x0)/2;
+	int height=(y0-y1)/2;
 	
 	RGBTRIPLE* pixels_string=NULL; //указатель на строку из пикселей
 	RGBTRIPLE temp; //указатель на пиксель
@@ -83,8 +85,8 @@ char **BmpSwap(char **raster, int x0, int y0, int x1, int y1)
 		for (j=x0;j<=x;j++) 
 		{ 
 			temp=pixels_string[j]; 
-			pixels_string[j]=pixels_string[x+j+1]; 
-			pixels_string[x+j+1]=temp; 
+			pixels_string[j]=pixels_string[weight+j+1]; 
+			pixels_string[weight+j+1]=temp; 
 		} 
 	} 
 	
@@ -92,7 +94,7 @@ char **BmpSwap(char **raster, int x0, int y0, int x1, int y1)
 	for (i=y1;i<=y;i++) 
 	{ 
 		pixels_string=(RGBTRIPLE*)raster[i]; 
-		second_string=(RGBTRIPLE*)raster[y+i+1];
+		second_string=(RGBTRIPLE*)raster[height+i+1];
 		for(j=x0;j<=x1;j++)
 		{
 			temp=pixels_string[j];
@@ -100,7 +102,7 @@ char **BmpSwap(char **raster, int x0, int y0, int x1, int y1)
 			second_string[j]=temp;
 		}
 	} 
-  
+	
 	return raster;
 }
 
