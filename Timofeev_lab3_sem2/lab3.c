@@ -24,8 +24,8 @@ char* txtOpen(char* txtName){ //функция открытия файла
 }
 
 void list_dir(const char* dirName, char** strsTxt, int* len){ //обход каталога
-    char* current_path=(char*)malloc(sizeof(char)*10000); //выделяем память для строки, где будет путь к объекту
-    strcpy(current_path,dirName);
+    char current_path[10000]; //выделяем память для строки, где будет путь к объекту
+    strcpy(current_path, dirName);
     DIR *current_dir = opendir(current_path);
     if (current_dir == NULL) return; //проверяем корректно ли открылся каталог
     struct dirent* current_dir_file =readdir(current_dir); //считываем структуру с информацией об объекте в первом каталоге
@@ -49,12 +49,20 @@ int compare(const void* a, const void* b){ //компаратор для qsort-a
 }
 
 int main(){
-    char** strs = (char**)malloc(sizeof(char*)*100); //выделяем память под массив указателей на строки
+    char** strs = (char**)malloc(sizeof(char*)*1000); //выделяем память под массив указателей на строки
     int len = 0;
     int i=0;
+    char str[1000];
+    FILE* fo;
+    fo=fopen("fo","w"); //открываем файл для записи
     list_dir(".",strs,&len); //заполняем массив строками из файлов
     qsort(strs, len, sizeof(char*), compare); //сортируем строки
-    for (i=0;i<len;i++) printf("%s\n", strs[i]); //выводим отсортированные строки
+    for (i=0;i<len;i++) fprintf(fo,"%s\n", strs[i]); //выводим отсортированные строки
+    fclose(fo); //закрываем
+    fo=fopen("fo","r"); //открываем для чтения
+    while (fgets(str, 1000, fo))
+      printf("%s", str);
+    fclose(fo); //закрываем
     for (i=0;i<len;i++) free(strs[i]); //освобождаем память
     free(strs);
     return 0;
