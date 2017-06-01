@@ -4,34 +4,34 @@
 #include "function.h"
 
 int main(void){
-    char fname[256];                                                            //Массив под имя файла
+    char fname[256];
     scanf("%[^\n]",fname);
     
     FILE* input;
-    if((input=fopen(fname, "r"))==NULL)                                         //Открываем файл для чтения и проверяем на ошибку ввода
+    if((input=fopen(fname, "r"))==NULL)
     {
         printf("Error opening file");
         return 0; 
     } 
     
-    int clsnum;                                                                 //Количество строк/столбцов
-    if(isNotSquare(input, &clsnum))                                             //Проверка на квадратичность
+    int clsnum;
+    if(isNotSquare(input, &clsnum))
     { 
         printf("Fail");
         fclose(input);
         return 0;
     }
     
-    char *buff;                                                                 //Буферный  массив
-    size_t fsize=filesize(input);                                               //Размер файла
+    char *buff; 
+    int fsize=filesize(input);
     buff=(char*)malloc(sizeof(char)*fsize);
     readfromfile(input, buff);
     fclose(input);
     
-    char*** pointer;                                                            //Массив указателей на слова
+    char*** pointer;
     pointer = create(clsnum);
-    pointer = recievePointers(buff, pointer, clsnum);                           //Получение указателей
-    transpose(pointer, clsnum);                                                 //Транспонирование матрицы
+    pointer = recievePointers(buff, pointer, clsnum);
+    transpose(pointer, clsnum);
     
     FILE* output=fopen("output.txt", "w");
     FillDaFile(output, pointer, clsnum);

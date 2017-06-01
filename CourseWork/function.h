@@ -1,4 +1,4 @@
-size_t filesize(FILE*); 
+int filesize(FILE*); 
 void readfromfile(FILE *, char*);
 void FillDaFile(FILE*, char***, int);
 

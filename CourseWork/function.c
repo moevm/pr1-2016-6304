@@ -3,9 +3,9 @@
 #include <stdlib.h>
 
 //Функция для определения размера файла
-size_t filesize(FILE* input){
+int filesize(FILE* input){
     fseek(input,0,SEEK_END); 
-    size_t size = ftell(input); 
+    int size = ftell(input); 
     return size;
 }
 
@@ -55,8 +55,8 @@ void transpose(char*** ar, int n){
 //Функция обмена значений указателей
 void swap(char **a, char **b){
     char *c = *a;
-	 *a = *b;
-	 *b = c;
+    *a = *b;
+    *b = c;
 }
 
 //Функция создания двумерного массива указателей
@@ -68,7 +68,7 @@ char*** create(int num){
 }
 
 //Функция записи указателей в массив
-char*** recievePointers(char* str, char*** pointer, int num){ // ИСПРАВИТЬ - НЕПРАВИЛЬНЫЙ УКАЗАТЕЛЬ
+char*** recievePointers(char* str, char*** pointer, int num){
     pointer[0][0]=strtok(str, " \n");
     for(int i=1; i<num; i++)
         pointer[0][i]=strtok(NULL," \n");
