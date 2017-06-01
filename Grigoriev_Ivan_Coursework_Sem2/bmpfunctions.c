@@ -77,7 +77,7 @@ char **BmpSwap(char **raster, int x0, int y0, int x1, int y1)
 	int height=(y0-y1)/2;
 	
 	RGBTRIPLE* pixels_string=NULL; //указатель на строку из пикселей
-	RGBTRIPLE temp; //указатель на пиксель
+	RGBTRIPLE temp; 
 	
 	for (i=y1;i<=y0;i++) 
 	{ 
