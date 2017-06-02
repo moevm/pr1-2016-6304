@@ -36,6 +36,9 @@ int main()
 	NewBmp(BmpName,buf, &FileInfo, &ImageInfo);
 	printf("Rotated BMP file \"%s\" created\n", BmpName);
 	free(BmpName);
+	for(i=0; i < ImageInfo.height; i++){
+		free(buf[i]);
+	}
 	free(buf);
 	return 0;
 }
