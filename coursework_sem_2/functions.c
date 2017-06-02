@@ -61,7 +61,7 @@ char **bmpScan(FILE *bmpFile, bmHeader *BMhead, DIBheader *DIBhead) {
         for (j=0; j<line; j++)
             pixArr[i][j]=bmpArr[k++];
     }
-
+    free(bmpArr);
     return pixArr;
 }
 
@@ -111,7 +111,9 @@ char* createNewBmp(char** pixArr, bmHeader* BMhead, DIBheader* DIBhead) {
         for (j=0; j<align; j++)
             fputc(0, newBMPFile); //adding nulls to aligning
     }
-
+    for(i=0; i<DIBhead->hight; i++)
+        free(ptrArr[i]);
+    free(ptrArr);
     fclose(newBMPFile);
     return newBmpN;
 }
