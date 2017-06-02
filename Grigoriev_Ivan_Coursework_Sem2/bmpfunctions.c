@@ -35,10 +35,11 @@ int AreDataCorrect(FILE *bmp_file, int x0, int y0, int x1, int y1)
 char **BmpScan(FILE *bmp_file, BITMAPFILEHEADER *file_head, BITMAPINFOHEADER *image_head)
 {
 	int i,j,k=0;
-  
+        
+	fread(file_head, 1, sizeof(BITMAPFILEHEADER), bmp_file);
+	fread(file_head, 1, sizeof(BITMAPINFOHEADER), bmp_file);
     /*Корректное определение размера файла*/
 	fseek(bmp_file,0,SEEK_END); //перемещает указатель в конец файла
-  
 	/*возвращает значение указателя текущего положения 
 	(значение соответствующее количеству байт от начала файла)*/
 	int image_size=ftell(bmp_file); 
@@ -48,10 +49,6 @@ char **BmpScan(FILE *bmp_file, BITMAPFILEHEADER *file_head, BITMAPINFOHEADER *im
 	char* str=(char*)malloc(sizeof(char)*image_size);
 	fread(str, sizeof(char), image_size, bmp_file); //считывание файла
 
-	*file_head=*((BITMAPFILEHEADER*)str); //заголовок с информацией о файле
-	str+=sizeof(BITMAPFILEHEADER); //указатель сдвигается на размер заголовка
-	*image_head=*((BITMAPINFOHEADER*)str); //заголовок с информацией о изображении
-	str-=sizeof(BITMAPFILEHEADER); 
 	str+=file_head->bfOffBits; //передвигаем указатель на битовый массив, описывающий само изображение
 
 	int str_len=3*(image_head->biWidth)+(image_head->biWidth%4); //каждый пиксель кодируется 24 битами + выравнивание 
