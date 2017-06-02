@@ -3,17 +3,18 @@
 #include <string.h>
 #include <locale.h>
 
+#define N 15
 
 typedef struct Students_file1
 {
-	char last_name[15];
-	char first_name[15];
+	char last_name[N];
+	char first_name[N];
 } Students_file1;
 
 typedef struct Students_file2
 {
-    char last_name[15];
-	char first_name[15];
+    char last_name[N];
+	char first_name[N];
 	int Score;
 } Students_file2;
 
