@@ -1,8 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//Program reads strings with commands and works with array
-//Array fills and cleans like stack
+
+int push(int* array, int j, char* a)
+{
+    array[j]=atoi(a);
+    printf("ok\n");
+    return j+1;
+}
+
+void size(int j)
+{
+    printf("%d\n", j);
+}
+
+int printexit()
+{
+    printf("bye\n");
+    return 1;
+}
+
+int pop(int* array, int j)
+{
+    printf("%d\n", array[j-1]);
+    return j-1;
+}
+
+void top(int* array, int j)
+{
+    printf("%d\n", array[j]);
+}
+
 int main()
 {
     int i=0, c=1, n, j=0, flag=0;   // c - input strings counter, n - result strings amount counter
@@ -27,41 +55,37 @@ int main()
         i++;
     }
     }
-    for (n=0; n<i; n++) //works with array depending on commands
+    for (n=0; n<i; n++)
     {
         if (flag==0)
         {
-            if (strcmp(mas[n], "push")==0) // pushes number into array
+            if (strcmp(mas[n], "push")==0)
             {
+                j=push(array, j, mas[n+1]);
                 n++;
-                array[j]=atoi(mas[n]);
-                printf("ok\n");
-                j++;
             }
-            else if (strcmp(mas[n], "size")==0) // prints size of occupied cells
+            else if (strcmp(mas[n], "size")==0)
             {
-                printf("%d\n", j);
+                size(j);
             }
-            else if (strcmp(mas[n], "exit")==0) // ends program by breaking cycle
+            else if (strcmp(mas[n], "exit")==0)
             {
-                printf("bye\n");
-                flag=1;
+                flag=printexit();
             }
             else if (j!=0)
             {
-                if (strcmp(mas[n], "pop")==0) //prints top element and reduces result array counter
+                if (strcmp(mas[n], "pop")==0)
                 {
-                    printf("%d\n", array[j-1]);
-                    j--;
+                    j=pop(array, j);
                 }
-                else if (strcmp(mas[n], "top")==0) // prints top element
+                else if (strcmp(mas[n], "top")==0)
                 {
-                    printf("%d\n", array[j-1]);
+                    top(array, j-1);
                 }
             }
             else
             {
-                printf("error\n"); // default action
+                printf("error\n");
                 flag=1;
             }
         }
