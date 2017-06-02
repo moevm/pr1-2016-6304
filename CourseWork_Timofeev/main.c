@@ -24,7 +24,7 @@ int main()
 	}
 	BMFileHeader FileInfo;
 	BMInfoHeader ImageInfo;
-	char** buffer = LoadBmp(input_file, &FileInfo, &ImageInfo);
+	char** buf = LoadBmp(input_file, &FileInfo, &ImageInfo);
 	fclose(input_file);
 	if (ImageInfo.width < x1+1 || ImageInfo.height < y0+1)
 	{
@@ -32,9 +32,10 @@ int main()
 		free(BmpName);
 		return 0;
 	}
-	buffer = AreaRotate(buffer, x0, y0,x1,y1);
-	NewBmp(BmpName,buffer, &FileInfo, &ImageInfo);
+	buf = AreaRotate(buf, x0, y0,x1,y1);
+	NewBmp(BmpName,buf, &FileInfo, &ImageInfo);
 	printf("Rotated BMP file \"%s\" created\n", BmpName);
 	free(BmpName);
+	free(buf);
 	return 0;
 }
