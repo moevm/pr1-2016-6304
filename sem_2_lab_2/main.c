@@ -1,49 +1,49 @@
-#include <stdio.h>			// 
-#include <stdlib.h>			// подключение стандартных библиотек
-#include <string.h>			//
+#include <stdio.h>			
+#include <stdlib.h>			
+#include <string.h>			
 
-void pop(int* stack, int j)         //функция удаления элемента
+void pop(int* stack, int j)         
 {
     stack[j]=0;
-    pushnull(stack, j+1);
+    
 }
 
-void push(int* stack, int* old, int j, int k)       //функция запушивания в стек
+void push(int* stack, int* old, int j, int k)     
 {
     stack[j]=old[k];
-    pushnull(stack, j+1);
+    pop(stack, j+1);
 }
 
-void pushplus(int* stack, int* old, int j, int k)   //функция запушивания результата сложения двух элементов в стек
+void pushplus(int* stack, int* old, int j, int k)   
 {
     stack[j]+=old[k];
-    pushnull(stack, j+1);
+    pop(stack, j+1);
 }
 
-void pushminus(int* stack, int* old, int j, int k)  //функция запушивания результата вычитания двух элементов в стек
+void pushminus(int* stack, int* old, int j, int k)  
 {
     stack[j]-=old[k];
-    pushnull(stack, j+1);
+    pop(stack, j+1);
 }
 
-void pushumn(int* stack, int* old, int j, int k)    //функция запушивания результата умножения двух элементов в стек
+void pushumn(int* stack, int* old, int j, int k)   
 {
     stack[j]*=old[k];
-    pushnull(stack, j+1);
+    pop(stack, j+1);
 }
 
-void pushdel(int* stack, int* old, int j, int k)    //функция запушивания результата деления двух элементов в стек
+void pushdel(int* stack, int* old, int j, int k)    
 {
     stack[j]/=old[k];
-    pushnull(stack, j+1);
+    pop(stack, j+1);
 }
 
-int top(int* stack, int j)              //функция вызова элемента из стека
+int top(int* stack, int j)              
 {
     return stack[j];
 }
 
-int size(int* stack, int i)             //функция вызова размера стека
+int size(int* stack, int i)            
 {
     int j=0;
     int k=0;
@@ -55,89 +55,98 @@ int size(int* stack, int i)             //функция вызова разме
 }
 
 int main() {
-    int i=0;			//
-    int j=0;			// счетчики
-    int k=0;			//
-    int m=0;			// триггер
-    char plus[2]="+";			//
-    char minus[2]="-";			// массивы с символами операций
-    char umn[2]="*";			// (для использования в strcmp)
-    char del[2]="/";			//
-    char origin[100];		// массив для исходной последовательности
-    char nums[100][100];		// массив для токенов из origin
-    int inums[100];		// массив для токенов, преобразованных в int
-    int stack[100];		// стековый массив
-    fgets(origin, 100, stdin);	// счет с потока ввода
-    char* token=strtok(origin, " ");	//
-    while(token!=NULL)				//
-    {							//
-        int numb=strlen(token);		// деление массива origin 
-        strncpy(nums[i], token, numb);	// на токены
-        token=strtok(NULL, " ");		//
-        i++;					//
-    }							//
-    for(j=0;j<=i;j++){				// цикл перевода цифр из 
-        inums[j]=atoi(nums[j]);		// типа char в int
-    }					// (символы операций переводятся как 0)
-    for(j=0;j<=i;j++){			//
-        if(top(inums, k)!=0){   //выявление символов операций
-            push(stack, inums, j, k);	// (если число, то записывается в стек,
-            k++;				// иначе – символ операции)
-        }					//
-        else{
-            if(strcmp(nums[k], plus)==0){	// (*) обращаемся к токену ===
-                if(j>=2){					// проверка элементов
-                pushplus(stack, stack, j-2, j-1);       // производим сложение элементов
-                j-=2;						// откат счетчика
-                k++;						// 
-                }							//
-                else{					// иначе
-                    m=1;				// переключение триггера
-                    j=i;				// завершение цикла
-                }						// 
-            }						// (*) ======================
-            else if(strcmp(nums[k], minus)==0){	// ===================
-                if(j>=2){					// идентично (*)
-                pushminus(stack, stack, j-2, j-1);
-                j-=2;						//
-                k++;						//
-                }							//
-                else{						//
-                    m=1;					//
-                    j=i;					//
-                }							//
-            }							// =======================
-            else if(strcmp(nums[k], umn)==0){		// =======================
-                if(j>=2){					// идентично (*)
-                pushumn(stack, stack, j-2, j-1);
-                j-=2;						//
-                k++;						//
-                }							//
-                else{						//
-                    m=1;					//
-                    j=i;					//
-            }							// =====================
-            else if(strcmp(nums[k], del)==0){		// =====================
-                if(top(stack, j-1)!=0){
-                if(j>=2){
-                pushdel(stack, stack, j-2, j-1);
-                j-=2;						//
-                k++;						//
-                }							//
-                else{						//
-                    m=1;					//
-                    j=i;					//
-                }							//
-            }							// =====================
-                }
-    }									//
-    if(size(stack, i)!=1)               //проверка размера стека
-             m=1;							//
-    if(m==0){						//
-        printf("\n%d", stack[0]);			// вывод результата
-    }								//
-    else{							//
-        printf("error");				//
-    }								//
-  return 0;						// завершение работы программы
+    int i=0;			
+    int j=0;			
+    int k=0;			
+    int m=0;		
+    char plus[2]="+";			
+    char minus[2]="-";			
+    char umn[2]="*";			
+    char del[2]="/";			
+    char origin[100];		
+    char nums[100][100];		
+    int inums[100];		
+    int stack[100];		
+    fgets(origin, 100, stdin);	
+    char* token=strtok(origin, " ");	
+    while(token!=NULL)				
+    {							
+        int numb=strlen(token);		
+        strncpy(nums[i], token, numb);	
+        token=strtok(NULL, " ");		
+        i++;					
+    }
+    
+    for(j=0;j<i;j++){
+	if((strcmp(nums[j], plus)!=0)&&(strcmp(nums[j], minus)!=0)&&(strcmp(nums[j], umn)!=0)&&(strcmp(nums[j], del)!=0)){
+	stack[k]=atoi(nums[j]);
+       
+        k++;
+    }
+        else if(strcmp(nums[j], plus)==0){	
+                if(k>=2){					
+                pushplus(stack, stack, k-2, k-1); 
+                       
+                k-=1;						
+                    
+                
+                }							
+                else{					
+                    m=1;				
+                    j=i;				
+                }						
+            }						
+            else if(strcmp(nums[j], minus)==0){	
+                if(k>=2){					
+                pushminus(stack, stack, k-2, k-1);
+                    
+                k-=1;						
+                 
+                
+                }							
+                else{						
+                    m=1;					
+                    j=i;					
+                }						
+            }							
+            else if(strcmp(nums[j], umn)==0){		
+                if(k>=2){					
+                pushumn(stack, stack, k-2, k-1);
+                    
+                k-=1;						
+                  
+               					
+                }							
+                else{						
+                    m=1;					
+                    j=i;					
+            }
 }							
+            else if(strcmp(nums[j], del)==0){		
+                if(top(stack, k-1)!=0){
+                if(k>=2){
+                pushdel(stack, stack, k-2, k-1);
+                   
+                k-=1;						
+                   
+               						
+                }						
+                else{						
+                    m=1;					
+                    j=i;					
+                }							
+            }
+	}					
+            
+	} 
+    					
+    if(size(stack, i)!=1)               
+             m=1;							
+    if(m==0){						
+        printf("\n%d", stack[0]);			
+    }								
+    else{							
+        printf("error");				
+    }								
+  return 0;						
+} 
