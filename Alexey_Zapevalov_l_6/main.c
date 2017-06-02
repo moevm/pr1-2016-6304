@@ -2,31 +2,31 @@
 #include <stdlib.h>
 #include <string.h>
 
-int push(int* array, int j, char* a)
+int push(int* array, int j, char* a) //adds new element
 {
     array[j]=atoi(a);
     printf("ok\n");
     return j+1;
 }
 
-void size(int j)
+void size(int j) //shows current index
 {
     printf("%d\n", j);
 }
 
-int printexit()
+int printexit()//ends program
 {
     printf("bye\n");
     return 1;
 }
 
-int pop(int* array, int j)
+int pop(int* array, int j)//prints and deletes top element
 {
     printf("%d\n", array[j-1]);
     return j-1;
 }
 
-void top(int* array, int j)
+void top(int* array, int j)//shows top element
 {
     printf("%d\n", array[j]);
 }
