@@ -37,7 +37,7 @@ char **BmpScan(FILE *bmp_file, BITMAPFILEHEADER *file_head, BITMAPINFOHEADER *im
 	int i,j,k=0;
         
 	fread(file_head, 1, sizeof(BITMAPFILEHEADER), bmp_file);
-	fread(file_head, 1, sizeof(BITMAPINFOHEADER), bmp_file);
+	fread(image_head, 1, sizeof(BITMAPINFOHEADER), bmp_file);
     /*Корректное определение размера файла*/
 	fseek(bmp_file,0,SEEK_END); //перемещает указатель в конец файла
 	/*возвращает значение указателя текущего положения 
