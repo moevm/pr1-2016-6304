@@ -82,12 +82,10 @@ fprintf(out_file, "%d ", newMatrix[i][j]);
 fprintf(out_file, "\n");
 }
 
- free (in_path);
- free (out_path);
- free (PrimalString);
  
  for (i=0; i<data[1]; i++)
   free (newMatrix[i]);
+ 
 free (newMatrix);
 free (matrixString1);
 free (matrixString2);
