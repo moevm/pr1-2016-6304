@@ -1,21 +1,9 @@
-/*
-Курсовая работа. Второй семестр. Григорьев Иван гр.6304
-----------------------------------------------------------------
-Программа считывает bmp файл, делит заданную область этого файла
-на 4 равные части, меняет их местами по диагонали и записывает
-результат в новый bmp файл.
-----------------------------------------------------------------
-*/
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "structures.h"
 #include "functions.h"
-//#define NAME_LIMIT 265
-//#define BMP_FILENAME "bmpfile.bmp"
-//#define NEW_BMP_FILENAME "changedbmpfile.bmp"
 
 int main() {
     char* bmpFileN=(char*)malloc(100*sizeof(char));
@@ -23,9 +11,10 @@ int main() {
     printf("Insert the BMP file name, please\n");
     scanf("%s", bmpFileN);
     FILE* bmpFile=fopen(bmpFileN, "rb");
-    bmHeader BMhead; //заголовок с информацией о файле
-    DIBheader DIBhead; //заголовок с информацией о изображении
+    bmHeader BMhead; //file header
+    DIBheader DIBhead; //pic header
 
+    //checking if file is correct
     if(!correctionCheck1(bmpFile, bmpFileN))
         return 0;
 
@@ -35,15 +24,15 @@ int main() {
     printf("Coordinates of the right bottom corner (x1, y1): ");
     scanf("%d %d", &x1, &y1);
 
-    //Проверка введенных данных
+    //checking if coordinates are correct
     if(!correctionCheck2(bmpFile, x0, y0, x1, y1))
         return 0;
 
-    /*Создание и заполнение двумерного массива символов информацией о пикселях bmp изображения*/
+    /* scans a file to an array */
     char** pixArr=bmpScan(bmpFile, &BMhead, &DIBhead);
     fclose(bmpFile);
 
-    if (DIBhead.width<(x1+1) || DIBhead.height<(y0+1)) { //Если введенная область больше самого изображения
+    if (DIBhead.width<(x1+1) || DIBhead.height<(y0+1)) { //if area is not corrrect
         printf("Fail with the entered area\n");
         return 0;
     }
