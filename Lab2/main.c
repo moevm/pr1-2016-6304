@@ -1,54 +1,58 @@
+#define TAG 15
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-int flag = -1;//начальная позиция
+typedef struct Stack{
+    char tag[200][TAG];
+    size_t size;
+} Stack_t;
 
-void push(char ** stack, char * element){ //Положить элемент
-    strcpy(stack[++flag],element); //Путём простого копирования
+const char * pop(Stack_t *stack){
+    stack->size--;
+    return stack->tag[stack->size+1];
 }
 
-void pop(char ** stack){ //Убрать элемент
-    flag--;
+void push(Stack_t *stack, char *tag_push) {
+    stack->size++;
+    strncpy(stack->tag[stack->size], tag_push,15);
 }
 
-int is_empty(){ //Проверка на пустоту
-   return (flag == -1) ? 0 : 1;
+int is_empty(Stack_t * stack){
+    return stack->size;
 }
 
-int main(){
-    char c; //Объявление переменной через которую считываем текст
-    char tag[15]; //Буфер под теги
-    char **stack;
-    stack = (char**)malloc(100 * sizeof(char*)); //Выделяем помять под стек, каждый элемент которого - массив
-        for (int i = 0; i<100; i++)
-                stack[i] = (char*)malloc(15 * sizeof(char)); //Каждый член - тэг
-    while (c != '\n' ){ //До тех пор пока не конец строки
-        scanf("%c",&c);  //Считываем c
-        if (c == '<') { //Если С <
-            scanf("%15[^>]",tag); //То начинаем считывать в стэк до > (15 обусловлено тем, что самый длинный тэг 10 символов, но 5 на прозапас)
-            if (strcmp(tag,"hr") && strcmp(tag,"br")){ //Если это не br или hr
-                if (tag[0] != '/') //Если последний тег не закрывающий
-                    push(stack,tag);  // Кладём в стэк       
-                else{ //Иначе
-                    if (is_empty() == 0){ // Если стек пуст
-                        printf("wrong"); //То ошибка
-                        return 0; //Выходим
-                    }
-                    else{ //Иначе
-                        if (strcmp(stack[flag],tag+1)){//если закрывающий отличен от нынешнего
-                            printf("wrong");
-                            return 0;
+int main(void) {
+    Stack_t head;
+    char tag[TAG];
+    char tcheck[TAG];   
+    head.size=-1;
+    char c;
+    while ((c = getchar()) != EOF ){
+        if (c == '<') {
+            scanf("%15[^>]",tag);
+            if (strcmp(tag,"br") && strcmp(tag,"hr")){
+                if(tag[0] != '/'){
+                    push(&head, tag);
+                }else{
+                    if (is_empty(&head)==-1){
+                        printf("wrong");
+                        return 0;
                         }
-                        else
-                            pop(stack);  
-                    }
-                }
-            }
-        }                                       
+                    else{
+                            strcpy(tcheck, pop(&head));
+                            if(strcmp(tcheck,tag+1)!=0){
+                                printf("wrong");
+                                return 0;
+                      }
+                  }
+              }
+              }
+        }
     }
-    if (!is_empty()) //Конечное условие проверки
-        printf("correct");//Если путо, то все тэги закрыты
+    if (is_empty(&head)==-1)
+        printf("correct");   
     else
-        printf("wrong");//А если нет, то не все
+        printf("wrong");  
 }
