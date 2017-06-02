@@ -2,37 +2,43 @@
 #include <stdlib.h>			// подключение стандартных библиотек
 #include <string.h>			//
 
+void pop(int* stack, int j)         //функция удаления элемента
+{
+    stack[j]=0;
+    pushnull(stack, j+1);
+}
+
 void push(int* stack, int* old, int j, int k)       //функция запушивания в стек
 {
     stack[j]=old[k];
-}
-
-void pushnull(int* stack, int j)                    //функция запушивания нуля в стек
-{
-    stack[j]=0;
+    pushnull(stack, j+1);
 }
 
 void pushplus(int* stack, int* old, int j, int k)   //функция запушивания результата сложения двух элементов в стек
 {
     stack[j]+=old[k];
+    pushnull(stack, j+1);
 }
 
 void pushminus(int* stack, int* old, int j, int k)  //функция запушивания результата вычитания двух элементов в стек
 {
     stack[j]-=old[k];
+    pushnull(stack, j+1);
 }
 
 void pushumn(int* stack, int* old, int j, int k)    //функция запушивания результата умножения двух элементов в стек
 {
     stack[j]*=old[k];
+    pushnull(stack, j+1);
 }
 
 void pushdel(int* stack, int* old, int j, int k)    //функция запушивания результата деления двух элементов в стек
 {
     stack[j]/=old[k];
+    pushnull(stack, j+1);
 }
 
-int pop(int* stack, int j)              //функция вызова элемента из стека
+int top(int* stack, int j)              //функция вызова элемента из стека
 {
     return stack[j];
 }
@@ -74,7 +80,7 @@ int main() {
         inums[j]=atoi(nums[j]);		// типа char в int
     }					// (символы операций переводятся как 0)
     for(j=0;j<=i;j++){			//
-        if(pop(inums, k)!=0){   //выявление символов операций
+        if(top(inums, k)!=0){   //выявление символов операций
             push(stack, inums, j, k);	// (если число, то записывается в стек,
             k++;				// иначе – символ операции)
         }					//
@@ -82,7 +88,6 @@ int main() {
             if(strcmp(nums[k], plus)==0){	// (*) обращаемся к токену ===
                 if(j>=2){					// проверка элементов
                 pushplus(stack, stack, j-2, j-1);       // производим сложение элементов
-                pushnull(stack, j-1);					// обнуление ненужного
                 j-=2;						// откат счетчика
                 k++;						// 
                 }							//
@@ -94,7 +99,6 @@ int main() {
             else if(strcmp(nums[k], minus)==0){	// ===================
                 if(j>=2){					// идентично (*)
                 pushminus(stack, stack, j-2, j-1);
-                pushnull(stack, j-1);				//
                 j-=2;						//
                 k++;						//
                 }							//
@@ -106,7 +110,6 @@ int main() {
             else if(strcmp(nums[k], umn)==0){		// =======================
                 if(j>=2){					// идентично (*)
                 pushumn(stack, stack, j-2, j-1);
-                pushnull(stack, j-1);				//
                 j-=2;						//
                 k++;						//
                 }							//
@@ -115,10 +118,9 @@ int main() {
                     j=i;					//
             }							// =====================
             else if(strcmp(nums[k], del)==0){		// =====================
-                if(pop(stack, j-1)!=0){
+                if(top(stack, j-1)!=0){
                 if(j>=2){
                 pushdel(stack, stack, j-2, j-1);
-                pushnull(stack, j-1);
                 j-=2;						//
                 k++;						//
                 }							//
