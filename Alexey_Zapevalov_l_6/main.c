@@ -62,7 +62,7 @@ int main()
             if (strcmp(mas[n], "push")==0)
             {
                 j=push(array, j, mas[n+1]);
-                n++;
+                n++; //jumps over the number
             }
             else if (strcmp(mas[n], "size")==0)
             {
