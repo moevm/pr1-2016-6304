@@ -66,8 +66,10 @@ int main() //creates array of strings, calls function to fill it, sorts strings.
     qsort(arr, N, sizeof(char*), comp);//sorting array
     while(arr[j])
     {
-        printf("%s", arr[j]);//output
+        printf("%s", arr[j]);
+        free(arr[j]);//output
         j++;
     }
+    free(arr);
     return 0;
 }
