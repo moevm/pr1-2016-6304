@@ -52,9 +52,9 @@ char **bmpScan(FILE *bmpFile, bmHeader *BMhead, DIBheader *DIBhead) {
     bmpArr-=sizeof(bmHeader);
     bmpArr+=BMhead->offsetToPixels; //moves pointer to a pixel array
 
-    int line=3*(DIBhead->width)+(DIBhead->width%4); //êàæäûé ïèêñåëü êîäèðóåòñÿ 24 áèòàìè + âûðàâíèâàíèå
+    int line=3*(DIBhead->width)+(DIBhead->width%4); //counts amount of memory for each line
 
-    //çàïîëíåíèå äâóìåðíîãî ìàññèâà
+    //scans pic to an array
     char** pixArr=(char**)malloc(sizeof(char*)*DIBhead->height);
     for(i=0; i<DIBhead->height; i++) {
         pixArr[i]=(char*)malloc(sizeof(char)*line);
@@ -69,36 +69,26 @@ char **Diags(char **pixArr, int x0, int y0, int x1, int y1) {
     int i=y1;
     int j=x0;
 
-    RGB* pixels_string=NULL;
+    RGB* pixelsString=NULL; //pointer to a pixel array
 
     RGB temp;
     for(i; i<=y0; i++) {
-        pixels_string=(RGB*)pixArr[i];
+        pixelsString=(RGB*)pixArr[i]; //char string to a pixel string
         for(j; j<=x1; j++) {
-            temp=pixels_string[j];
+            temp=pixelsString[j];
             temp.Blue=0x00;
             temp.Green=0x00;
             temp.Red=0x00;
-            pixels_string[j]=temp;
+            pixelsString[j]=temp;
+            temp=pixelsString[x1-j];
+            temp.Blue=0x00;
+            temp.Green=0x00;
+            temp.Red=0x00;
+            pixelsString[x1-j]=temp;
             j=x1+1;
         }
-        //i=y1+1;
         j=x0+i+1;
     }
-    for(i=y1; i<=y0; i++) {
-        pixels_string=(RGB*)pixArr[i];
-        for(j=x1; j>=x0; j--) {
-            temp=pixels_string[x1-j];
-            temp.Blue=0x00;
-            temp.Green=0x00;
-            temp.Red=0x00;
-            pixels_string[x1-j]=temp;
-            j=x0-1;
-        }
-        //i=y1+1;
-        j=x1-i-1;
-    }
-    return pixArr;
 }
 
 
@@ -109,17 +99,17 @@ char* createNewBmp(char** pixArr, bmHeader* BMhead, DIBheader* DIBhead) {
     scanf("%s", newBmpN);
     FILE* newBMPFile=fopen(newBmpN,"wb");
 
-    //çàïèñü çàãîëîâêîâ
+    //writes headers in new file
     fwrite(BMhead, sizeof(bmHeader), 1, newBMPFile);
     fwrite(DIBhead, sizeof(DIBheader), 1, newBMPFile);
 
-    int realPix=3*DIBhead->width; //÷èñëî áàéò ñîäåðæàùèõ èíôîðìàöèþ î ïèêñåëÿõ
-    int align=DIBhead->width%4; //÷èñëî áàéò äëÿ âûðàâíèâàíèÿ
+    int realPix=3*DIBhead->width; //counts amount of memory for pic string
+    int align=DIBhead->width%4; //counts amount of memory for aligning
 
     for(i=0; i<DIBhead->height; i++) {
-        fwrite(pixArr[i], sizeof(char), realPix, newBMPFile); //çàïèñü ðàñòðà
+        fwrite(pixArr[i], sizeof(char), realPix, newBMPFile); //writes pixels in a new file
         for (j=0; j<align; j++)
-            fputc(0, newBMPFile); //äîïèñûâàíèå íóëåé
+            fputc(0, newBMPFile); //adding nulls to aligning
     }
 
     fclose(newBMPFile);
