@@ -5,11 +5,10 @@
 #include "structures.h"
 #include "functions.h"
 
-//#define NEW_BMP_FILENAME "changedbmpfile.bmp"
 
 int correctionCheck1(FILE *bmpFile, char* bmpFileN) {
 
-    if (bmpFile==NULL) { //проверка на корректность открытия файла
+    if (bmpFile==NULL) { //if file is not open correct
         printf("Fail with %s\n.", bmpFileN);
         return 0;
     }
@@ -18,16 +17,14 @@ int correctionCheck1(FILE *bmpFile, char* bmpFileN) {
 
 int correctionCheck2(FILE *bmpFile, int x0, int y0, int x1, int y1) {
 
-    //проверка на корректность координат
+    //checking if coordiantes are correct
     if (x0<0 || y0<0 || x1<0 || y1<0 || (x1-x0)<0 || (y0-y1)<0) {
         printf("\nFail; with coordinates. The entered coordinates are not correct!\n");
         fclose(bmpFile);
         return 0;
     }
-    /*проверка на то, чтобы разность x и y координат была нечетной, для корректного
-      разбиения на 4 равные части*/
+    /*checking if zone is a square*/
     if((x1-x0)!=(y0-y1)) {
-        //if (((x1-x0)%2!=0) /*|| ((y0-y1)%2==0)*/) {
         printf("\nFail with coordinates. The area is not a square shape!\n");
         fclose(bmpFile);
         return 0;
@@ -38,31 +35,26 @@ int correctionCheck2(FILE *bmpFile, int x0, int y0, int x1, int y1) {
 char **bmpScan(FILE *bmpFile, bmHeader *BMhead, DIBheader *DIBhead) {
     int i,j,k=0;
 
-    /*Корректное определение размера файла*/
-    fseek(bmpFile,0,SEEK_END); //перемещает указатель в конец файла
+    /* checking file size */
+    fseek(bmpFile,0,SEEK_END); //moves pointer to the end of the file
 
-    /*возвращает значение указателя текущего положения
-    (значение соответствующее количеству байт от начала файла)*/
+    /*gets file size in bytes */
     int bmpSize=ftell(bmpFile);
 
-    fseek(bmpFile,0,SEEK_SET); //перемещает указатель обратно в начало
+    fseek(bmpFile,0,SEEK_SET); //moves pointer to the start
 
-
-    //fread(&BMhead, sizeof(bmHeader), 1, bmpFile);
-
-    //fread(&DIBhead, sizeof(DIBheader), 1, bmpFile);
     char* bmpArr=(char*)malloc(sizeof(char)*bmpSize);
-    fread(bmpArr, sizeof(char), bmpSize, bmpFile); //считывание файла
+    fread(bmpArr, sizeof(char), bmpSize, bmpFile); //reads file to array
 
-    *BMhead=*((bmHeader*)bmpArr); //заголовок с информацией о файле
-    bmpArr+=sizeof(bmHeader); //указатель сдвигается на размер заголовка
-    *DIBhead=*((DIBheader*)bmpArr); //заголовок с информацией о изображении
+    *BMhead=*((bmHeader*)bmpArr); //writes down file header
+    bmpArr+=sizeof(bmHeader); //moves pointer forward on a header size
+    *DIBhead=*((DIBheader*)bmpArr); //writes down the pic header
     bmpArr-=sizeof(bmHeader);
-    bmpArr+=BMhead->offsetToPixels; //передвигаем указатель на битовый массив, описывающий само изображение
+    bmpArr+=BMhead->offsetToPixels; //moves pointer to a pixel array
 
-    int line=3*(DIBhead->width)+(DIBhead->width%4); //каждый пиксель кодируется 24 битами + выравнивание
+    int line=3*(DIBhead->width)+(DIBhead->width%4); //ГЄГ Г¦Г¤Г»Г© ГЇГЁГЄГ±ГҐГ«Гј ГЄГ®Г¤ГЁГ°ГіГҐГІГ±Гї 24 ГЎГЁГІГ Г¬ГЁ + ГўГ»Г°Г ГўГ­ГЁГўГ Г­ГЁГҐ
 
-    //заполнение двумерного массива
+    //Г§Г ГЇГ®Г«Г­ГҐГ­ГЁГҐ Г¤ГўГіГ¬ГҐГ°Г­Г®ГЈГ® Г¬Г Г±Г±ГЁГўГ 
     char** pixArr=(char**)malloc(sizeof(char*)*DIBhead->height);
     for(i=0; i<DIBhead->height; i++) {
         pixArr[i]=(char*)malloc(sizeof(char)*line);
@@ -109,30 +101,6 @@ char **Diags(char **pixArr, int x0, int y0, int x1, int y1) {
     return pixArr;
 }
 
-/*char **bmpReflection(char **pixArr, int x0, int y0, int x1, int y1) {
-    int i,j;
-    //int x=(x1+x0)/2; //х координата половины области
-    //int y=(y0+y1)/2; //y координата половины области
-    int mid=(x1-x0)/2;
-    //int height=(y0-y1)/2;
-
-    RGB* pixels_string=NULL; //указатель на строку из пикселей
-    RGB temp; //указатель на пиксель
-
-    for (i=y1; i<=y0; i++) {
-        pixels_string=(RGB*)pixArr[i]; //char строка приводится к строке пикселей
-        for (j=x0; j<=mid; j++) {
-            temp=pixels_string[j];
-            printf("b:%x\ng:%x\nr:%x\n", temp.Blue, temp.Green, temp.Red);
-            temp.Blue=0x00;
-            temp.Green=0x00;
-            temp.Red=0x00;
-            pixels_string[j]=temp;
-            //pixels_string[x1-j]=pixels_string[j];
-        }
-    }
-    return pixArr;
-}*/
 
 char* createNewBmp(char** pixArr, bmHeader* BMhead, DIBheader* DIBhead) {
     int i,j;
@@ -141,17 +109,17 @@ char* createNewBmp(char** pixArr, bmHeader* BMhead, DIBheader* DIBhead) {
     scanf("%s", newBmpN);
     FILE* newBMPFile=fopen(newBmpN,"wb");
 
-    //запись заголовков
+    //Г§Г ГЇГЁГ±Гј Г§Г ГЈГ®Г«Г®ГўГЄГ®Гў
     fwrite(BMhead, sizeof(bmHeader), 1, newBMPFile);
     fwrite(DIBhead, sizeof(DIBheader), 1, newBMPFile);
 
-    int realPix=3*DIBhead->width; //число байт содержащих информацию о пикселях
-    int align=DIBhead->width%4; //число байт для выравнивания
+    int realPix=3*DIBhead->width; //Г·ГЁГ±Г«Г® ГЎГ Г©ГІ Г±Г®Г¤ГҐГ°Г¦Г Г№ГЁГµ ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГѕ Г® ГЇГЁГЄГ±ГҐГ«ГїГµ
+    int align=DIBhead->width%4; //Г·ГЁГ±Г«Г® ГЎГ Г©ГІ Г¤Г«Гї ГўГ»Г°Г ГўГ­ГЁГўГ Г­ГЁГї
 
     for(i=0; i<DIBhead->height; i++) {
-        fwrite(pixArr[i], sizeof(char), realPix, newBMPFile); //запись растра
+        fwrite(pixArr[i], sizeof(char), realPix, newBMPFile); //Г§Г ГЇГЁГ±Гј Г°Г Г±ГІГ°Г 
         for (j=0; j<align; j++)
-            fputc(0, newBMPFile); //дописывание нулей
+            fputc(0, newBMPFile); //Г¤Г®ГЇГЁГ±Г»ГўГ Г­ГЁГҐ Г­ГіГ«ГҐГ©
     }
 
     fclose(newBMPFile);
