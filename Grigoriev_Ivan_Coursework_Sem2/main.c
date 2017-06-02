@@ -20,7 +20,8 @@ int main()
         FILE* bmp_file=fopen(BMP_FILENAME, "rb");
         BITMAPFILEHEADER file_head; //заголовок с информацией о файле
 	BITMAPINFOHEADER image_head; //заголовок с информацией о изображении
-    
+        
+	int a,b;
 	int x0=-1,y0=-1,x1=-1,y1=-1;
 	printf("Coordinates of the left upper corner (x0, y0): ");
 	scanf("%d %d", &x0, &y0);
@@ -30,7 +31,12 @@ int main()
 	//Проверка введенных данных
 	if(!AreDataCorrect(bmp_file, x0, y0, x1, y1))
 	    return 0;
-
+	
+	if((x1-x0)%2==0) //если разность координат четная
+		a=1;
+	if((y0-y1)%2==0)
+		b=1;
+	
 	/*Создание и заполнение двумерного массива символов информацией о пикселях bmp изображения*/
 	char** raster=BmpScan(bmp_file, &file_head, &image_head); 
 	fclose(bmp_file);
@@ -41,8 +47,8 @@ int main()
 		return 0;
 	}
 	
-	CreateChangedBmp(BmpSwap(raster, x0, y0, x1, y1), &file_head, &image_head);
+	CreateChangedBmp(BmpSwap(raster, x0, y0, x1, y1, a, b), &file_head, &image_head);
 	printf("Bmp file /%s/ successfully changed in the same directory with new name /%s/\n\n", BMP_FILENAME, NEW_BMP_FILENAME);
-	
+	free(raster);
   return 0;
 }
