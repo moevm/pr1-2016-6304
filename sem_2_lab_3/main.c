@@ -8,7 +8,7 @@
 char* scanData(char* path) {
     FILE* file=fopen(path, "r");
     if(file==NULL){
-        //printf("Corrupted file\n");
+        printf("Corrupted file\n");
         fclose(file);
         return NULL;
     }
@@ -16,7 +16,7 @@ char* scanData(char* path) {
     int file_size=ftell(file);
     fseek(file, 0, SEEK_SET);
     if(file_size==0){
-        //printf("Empty file\n");
+        printf("Empty file\n");
         fclose(file);
         return NULL;
         }
@@ -35,7 +35,7 @@ void pathSearch(char* path, char** origin, int* str_counter) {
             int close = strlen(path);
             strcat(path, "/");
             strcat(path, s_dir->d_name);
-            if(s_dir->d_type == DT_REG &&(strcmp(s_dir->d_name, "a.out")!=0)&&(strcmp(s_dir->d_name, "main.c")!=0)) {
+            if((s_dir->d_type == DT_REG) && (strstr(current_dir_file->d_name, ".txt") != NULL)) {
                 if(scanData(path)!=NULL) {
                     origin[*str_counter]=(char*)malloc(1000*sizeof(char));
                     strcpy(origin[*str_counter], scanData(path));
@@ -49,12 +49,13 @@ void pathSearch(char* path, char** origin, int* str_counter) {
             s_dir = readdir(dir);
         }
         closedir(dir);
+        free(s_dir);
     } else return;
 
 }
 
 int compare(const void* a, const void* b) {
-    return atoi(*(char**)a) - atoi(*(char**)b);
+    return strcmp((*(char**)a), (*(char**)b));
 }
 
 
@@ -74,24 +75,3 @@ int main() {
     free(origin);
     return 0;
 }
-
-int compare(const void* a, const void* b) {
-    return atoi(*(char**)a) - atoi(*(char**)b);
-}
-
-int main() {
-    char** origin=(char**)malloc(1000*sizeof(char*));
-    char path[1000]=".";
-    int i=0;
-    int str_counter=0;
-    pathSearch(path, origin, &str_counter);
-    qsort(origin, str_counter, sizeof(char*), compare);
-    for (i=0; i<str_counter; i++) {
-        printf("%s\n", origin[i]);
-    }
-    for (i=0; i<str_counter; i++) {
-        free(origin[i]);
-    }
-    free(origin);
-    return 0;
-}	
