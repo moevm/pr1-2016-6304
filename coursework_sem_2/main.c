@@ -28,7 +28,7 @@ int main() {
     if(!correctionCheck2(bmpFile, x0, y0, x1, y1))
         return 0;
 
-    /* scans a file to an array */
+    // scans a file to an array 
     char** pixArr=bmpScan(bmpFile, &BMhead, &DIBhead);
     fclose(bmpFile);
 
