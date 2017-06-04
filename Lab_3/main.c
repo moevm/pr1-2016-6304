@@ -1,56 +1,41 @@
+#define FNUM 200
+#define PLEN 10000
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <dirent.h>
 #include <string.h>
 
-#define MAX_FILES 200
+void fileFinder(char [][PLEN], char *, char*);//Функция поиска файла
 
-int file_read(const char*, const char*, char**); //Функция считывания файлов
+int read(char*, char*, char [][PLEN]); //Функция считывания файлов
 
-void index_files(const char *, char**, int*); //Функция вывода пути
+void filePath(char *, char [][PLEN], int*); //Функция записи пути
 
-void find_file(char **, const char *, const char*);//Функция поиска файла
-
-int main(int c, char **v, char **env ){
-    char** files;
-    int files_num=0; 
-    files=(char**)malloc(200*sizeof(char*));
-    for(int i=0;i<200;i++)
-    {
-        files[i]=(char*)malloc(1000*sizeof(char));
-    }
-    index_files(".", files, &files_num);
-    find_file(files, "file.txt", "");
+int main(void){
+    int fnum=0; 
+    char files[200][PLEN];
+    filePath(".", files, &files_num);
+    fileFinder(files, "file.txt", "");
     return 0;
 }
 
-void find_file(char **files, const char *file_to_find, const char* buff){
-    char buffer[10000];
-    for(int i=0;i<MAX_FILES;i++)
+void fileFinder(char files[][PLEN], char *currFile, char* empty){
+    char buffer[PLEN];
+    char *ptext;
+    for(int i=0;i<FNUM;i++)
     {
-        if(strstr(files[i], file_to_find)!=NULL)
+        if(strstr(files[i], currFile)!=NULL)
         {
-            strcpy(buffer, buff);
+            strcpy(buffer, empty);
             strcat(buffer, files[i]);
             strcat(buffer, "\n");
-            if(file_read(files[i], buffer, files))
-            {
-                char *ptext;
-                char *temp;
-                char *pdir;
-                char dir[1001];
-                getcwd(dir, 1000); //Копируем полный путь
-                pdir=strtok(dir, "/"); //Разбиваем по /
-                while(pdir!=NULL)
-                {
-                    temp=pdir;
-                    pdir=strtok(NULL, "/");
-                }
+            if(read(files[i], buffer, files))
+            { 
                 ptext=strtok(buffer, "\n");
                 while(ptext!=NULL)
                 {
-                    printf("/%s/%s\n", temp, ptext);
+                    printf("%s\n",(ptext+2));
                     ptext=strtok(NULL, "\n");
                 }
             }
@@ -58,55 +43,57 @@ void find_file(char **files, const char *file_to_find, const char* buff){
     }
 }
 
-void index_files(const char *startdir, char** files, int* files_num){
-    char current_path[10000]; //Массив под путь
-    strcpy(current_path, startdir);
-    DIR *dir = opendir(current_path); 
-    struct  dirent *de = readdir(dir);
-    if(dir)
-        while(de = readdir(dir))//Пока есть что читать
+void filePath(char *startdir, char files[][PLEN], int* files_num){
+    char ActivePath[PLEN]; //Массив под путь
+    strcpy(ActivePath, startdir);
+    DIR *dir; 
+    struct dirent *cat = readdir(dir);
+    if(dir = opendir(ActivePath));
+        while(cat = readdir(dir))//Пока есть что читать
         {
-            if(de->d_type==8) //8 тип для дериктории (декодируется ASCII)
+            if(cat->d_type==DT_REG)
             {
-                int path_len = strlen(current_path); //Продлеваем на длину нашего пути
-                strcat(current_path,"/");
-                strcat(current_path,de->d_name);
-                strcpy(files[(*files_num)++], current_path);
-                current_path[path_len] = '\0'; //Добавляем в конец \0, чтобы strcat работал
+                int path_len = strlen(ActivePath);
+                strcat(ActivePath,"/");
+                strcat(ActivePath,cat->d_name);
+                strcpy(files[(*files_num)++], ActivePath);
+                ActivePath[path_len] = '\0'; //Добавляем в конец \0, чтобы strcat работал
             }
-            if(de->d_type == DT_DIR && strcmp(".",de->d_name) && strcmp("..", de->d_name))
+            if(cat->d_type == DT_DIR && strcmp(".",cat->d_name) && strcmp("..", cat->d_name))
             {
-                int path_len = strlen(current_path); //Изменяем длину пути на текущий
-                strcat(current_path,"/");
-                strcat(current_path,de->d_name);
-                index_files(current_path, files, files_num);
-                current_path[path_len] = '\0'; //Добавляем 0 для strcat
+                int path_len = strlen(ActivePath); //Изменяем длину пути на текущий
+                strcat(ActivePath,"/");
+                strcat(ActivePath,cat->d_name);
+                filePath(ActivePath, files, files_num);
+                ActivePath[path_len] = '\0';
             }
         }
   closedir(dir);
 }
 
-int file_read(const char* filename, const char* buff, char** files){
+int read(char* filename, char* empty, char files[][PLEN]){
     FILE *file; 
-    if ((file= fopen (filename, "r")) != NULL){ //Открываем файл на чтение и проверяем на правильность
-        char line [128]; //Буфер для содержимого
-        while (fgets(line, sizeof(line), file)!= NULL) //Считываем файл
+    if ((file = fopen (filename, "r")) != NULL)//Открываем файл на чтение и проверяем на правильность
+    { 
+        char str [4000]; //Буфер для содержимого
+        while (fgets(str, sizeof(str), file)!= NULL) //Считываем файл
         {           
-            if (strstr(line, "Minotaur"))
+            if (!strcmp(str, "Minotaur"))
                 return 1;
 	    char *ptext;//Объвляем массив для внутренних инклюдов
-	    ptext=strtok(line, " \n\r"); 
-	    while(ptext!=NULL){
-                if(strstr(ptext, ".txt\0"))
-                    find_file(files, ptext, buff); //Начинаем поиск файлов
-            ptext=strtok(NULL, " \n\r"); 
+	    ptext=strtok(str, " \n\r"); 
+	    while(ptext!=NULL)
+            {
+                if(strstr(ptext, ".txt"))
+                    fileFinder(files, ptext, empty); //Начинаем поиск файлов
+                ptext=strtok(NULL, " \n\r"); 
 	    }
         }
         fclose(file);
-  }
+    } 
     else
-  {
+    {
         perror(filename);
-  }
-  return 0;
+    }
+     return 0;
 }
