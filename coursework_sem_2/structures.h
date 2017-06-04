@@ -1,41 +1,35 @@
-#pragma pack(push, 1)
+#pragma pack(push, 1)//packs a structure with 1 byte aligning
 
 typedef struct bmHeader
 {
-   unsigned short signature; //определяет тип файла. Здесь он должен быть BM.
-   unsigned int fileSize; //размер самого файла в байтах
-   unsigned short Reserved1; //зарезервирован и должен быть нулем
-   unsigned short Reserved2; //зарезервирован и должен быть нулем
-   unsigned int offsetToPixels; /*показывает, где начинается сам битовый массив относительно начала файла
-   (или от начала структуры BITMAPFILEHEADER), который и описывает картинку*/
+   unsigned short signature; //determines a file type. Must b a BM type.
+   unsigned int fileSize; //file size in bytes
+   unsigned short Reserved1; //reserved and must be a 0
+   unsigned short Reserved2; //reserved and must be a 0
+   unsigned int offsetToPixels; //shows where the actual bitmap massive starts
 } bmHeader;
 
 typedef struct DIBheader
 {
-   unsigned int DIBSize; //размер самой структуры
-   unsigned int width; //задает ширину картинки в пикселях
-   unsigned int height; //задает высоту картинки в пикселях
-   unsigned short planes; //задает количество плоскостей, пока оно всегда устанавливается в 1
-   unsigned short bitCount; //количество бит на один пиксель
-   unsigned int compression; //тип сжатия, если сжатия нет, то этот флаг надо устанавливать в BI_RGB
-   unsigned int sizeImage; /*обозначает размер картинки в байтах, eсли изображение несжато
-   (то есть предыдущее поле установлено в BI_RGB), то здесь должен быть записан ноль*/
-   unsigned int xPixPerMeter; /*горизонтальное разрешение (в пикселях на метр) конечного устройства,
-   на которое будет выводиться битовый массив (растр)*/
-   unsigned int yPixPerMeter; /*вертикальное разрешение (в пикселях на метр) конечного устройства,
-   на которое будет выводиться битовый массив (растр)*/
-   unsigned int colourUsed; //определяет количество используемых цветов из таблицы
-   unsigned int colourImportant; /*это количество важных цветов. Определяет число цветов,
-   которые необходимы для того, чтобы изобразить рисунок.
-   Если это значение равно 0 (как это обычно и бывает), то все цвета считаются важными*/
+   unsigned int DIBSize; //a structure size
+   unsigned int width; //width of pic
+   unsigned int height; //height of pic
+   unsigned short planes; //number of planes (1 for now)
+   unsigned short bitCount; //bytes per pixel
+   unsigned int compression; //type of compression, put BI_RGB if there is no such
+   unsigned int sizeImage; //size of pic in bytes but 0 if there was no compression
+   unsigned int xPixPerMeter; //horizontal resolution of a gadget which a pic will be output on
+   unsigned int yPixPerMeter; //vertical resolution of a gadget which a pic will be output on
+   unsigned int colourUsed; //determines amount of used colours
+   unsigned int colourImportant; //determines amount of important colours for pic showing, if 0 all are important
 } DIBheader;
 
 
 
 typedef struct RGB
 {
-	char  Blue;
-	char  Green;
-	char  Red;
+	char  Blue;//blue part
+	char  Green;//green part
+	char  Red;//red part
 } RGB;
-#pragma pack(pop)
+#pragma pack(pop)//returns older aligning value
