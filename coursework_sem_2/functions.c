@@ -23,7 +23,7 @@ int correctionCheck2(FILE *bmpFile, int x0, int y0, int x1, int y1) {
         fclose(bmpFile);
         return 0;
     }
-    /*checking if zone is a square*/
+    //checking if zone is a square
     if((x1-x0)!=(y0-y1)) {
         printf("\nFail with coordinates. The area is not a square shape!\n");
         fclose(bmpFile);
@@ -35,10 +35,10 @@ int correctionCheck2(FILE *bmpFile, int x0, int y0, int x1, int y1) {
 char **bmpScan(FILE *bmpFile, bmHeader *BMhead, DIBheader *DIBhead) {
     int i,j,k=0;
 
-    /* checking file size */
+    // checking file size 
     fseek(bmpFile,0,SEEK_END); //moves pointer to the end of the file
 
-    /*gets file size in bytes */
+    //gets file size in bytes 
     int bmpSize=ftell(bmpFile);
 
     fseek(bmpFile,0,SEEK_SET); //moves pointer to the start
