@@ -35,7 +35,7 @@ void pathSearch(char* path, char** origin, int* str_counter) {
             int close = strlen(path);
             strcat(path, "/");
             strcat(path, s_dir->d_name);
-            if((s_dir->d_type == DT_REG) && (strstr(current_dir_file->d_name, ".txt") != NULL)) {
+            if((s_dir->d_type == DT_REG) && (strstr(s_dir->d_name, ".txt") != NULL)) {
                 if(scanData(path)!=NULL) {
                     origin[*str_counter]=(char*)malloc(1000*sizeof(char));
                     strcpy(origin[*str_counter], scanData(path));
