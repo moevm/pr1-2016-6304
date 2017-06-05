@@ -9,10 +9,10 @@ typedef struct rect
 	unsigned int square;
 }rect;
 
-rect *arr;
+rect arr[10000];
 int sz = 0;
 
-rect *r_arr;
+rect r_arr[10000];
 int r_sz = 0;
 
 void push (rect A, char m)
@@ -21,11 +21,9 @@ void push (rect A, char m)
 	{
 		case 'a':
 			*(arr+(sz++)) = A;
-			arr = (rect*)realloc(arr, sizeof(rect)*(sz+1));
 			break;
 		case 'r':
 			*(r_arr+(r_sz++)) = A;
-			r_arr = (rect*)realloc(r_arr, sizeof(rect)*(r_sz+1));
 			break;
 	}
 }
@@ -39,36 +37,40 @@ void rmv (int n)
 
 void is_rect (rect A)
 {
-	int i;
+	int i, f = 0;
 	for (i = 0; i < sz ; i++)
 	{	
 		if (((arr+i)->x1 == A.x1) && ((arr+i)->x2 == A.x2) && ((arr+i)->y2 == (A.y1-1)))
 		{
 			(arr+i)->square += A.square;
 			(arr+i)->y2 = A.y1;
-			push(A,'r');
-			break;
+			f = 1;
 		}
-		else if ((((((arr+i)->x1) <= A.x1) && ((arr+i)->x2 >= A.x1)) || ((arr+i)->x1 <= A.x1 && (arr+i)->x2 >= A.x2) || ((arr+i)->x1 > A.x1 && (arr+i)->x2 <A.x2))
-					&& ((arr+i)->y2 == (A.y1 - 1)))
+		else if (((((arr+i)->x1 >= A.x1) && ((arr+i)->x1 <= A.x2)) || 
+				 (((arr+i)->x1 <= A.x1) && ((arr+i)->x2 >= A.x1)))  
+				 && ((arr+i)->y2 == (A.y1 - 1)))
 		{
-			rmv(i); 
-			push(A,'r');
-			break;
+			rmv(i--);
+			f = 1;
 		}
-	}	
-	if (i == sz)
+		
+	}
+	if (!f)
 	{	
 		for (i = 0; i < r_sz; i++)
 		{
-			if ((((((r_arr+i)->x1) <= A.x1) && ((r_arr+i)->x2 >= A.x1)) || ((r_arr+i)->x1 <= A.x1 && (r_arr+i)->x2 >= A.x2) || ((r_arr+i)->x1 > A.x1 && (r_arr+i)->x2 <A.x2)) && ((r_arr+i)->y2 == (A.y1 - 1)))
+	 		if (((((r_arr+i)->x1 >= A.x1) && ((r_arr+i)->x1 <= A.x2)) || 
+				(((r_arr+i)->x1 <= A.x1) && ((r_arr+i)->x2 >= A.x1)))  
+				&& ((r_arr+i)->y2 == (A.y1 - 1)))
 				break;
 		}
 		if (i == r_sz)
 			push(A,'a');
 		else
-			push(A, 'r');	
+			push (A, 'r');
 	}
+	else
+		push(A, 'r');
 }
 
 void rect_searching (FILE *file, int widht, int height, int padding)
@@ -82,12 +84,12 @@ void rect_searching (FILE *file, int widht, int height, int padding)
 		{
 			for (int i = 0; i < 3; i++)
 				pixel[i] = fgetc(file);
-			if ((pixel[0] != 0xff || pixel[1] != 0xff || pixel[2] != 0xff) || ((x == widht-3) && mod))
+			if ((pixel[0] != 0xff || pixel[1] != 0xff || pixel[2] != 0xff))
 			{
 				if (mod)
 				{
 					mod = 0;
-					A.x2 = (x-3)/3+1;
+					A.x2 = (x-3)/3;
 					A.square = A.x2 - A.x1 + 1;
 					is_rect(A);
 				}
@@ -98,12 +100,13 @@ void rect_searching (FILE *file, int widht, int height, int padding)
 				A.x1 = x/3;
 				A.y1 = A.y2 = y;	
 				mod = 1;
-				if (x == (widht-3))
-				{	
-					A.x2 = A.x1;
-					is_rect(A);
-					mod = 0;
-				}
+			}
+			if (mod && x == widht-3)
+			{
+				A.x2 = x/3;	
+				A.square = A.x2 - A.x1 + 1;
+				is_rect(A);
+				mod = 0;
 			}
 		}
 		fseek(file, padding, SEEK_CUR);
@@ -112,8 +115,6 @@ void rect_searching (FILE *file, int widht, int height, int padding)
 
 int main (int count, char** input)
 {
-	arr = (rect*)malloc(sizeof(rect));
-	r_arr = (rect*)malloc(sizeof(rect));
 	FILE *bmp = fopen(input[1], "r");
 	if (bmp == NULL || !(strstr(input[1], ".bmp")))
 	{		printf ("Error, wrong input\n");
@@ -137,8 +138,6 @@ int main (int count, char** input)
 			ix = ((arr+i)->square > (arr+ix)->square) ? i : ix;
 		printf ("Top left corner:\n\t\tX1 = %d\n\t\tY1 = %d\nBottom right corner:\n\t\tX2 = %d\n\t\tY2 = %d\n", (arr+ix)->x1, (arr+ix)->y2, (arr+ix)->x2, (arr+ix)->y1);
 	}
-	free(arr);
-	free(r_arr);
 	fclose(bmp);
 	return 0;
 }
