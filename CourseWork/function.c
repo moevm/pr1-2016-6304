@@ -33,16 +33,37 @@ int isNotSquare(FILE *in, int *size){
     }
 }
 
+//Функция обмена значений указателей
+void swap(char **a, char **b){
+    char *c = *a;
+    *a = *b;
+    *b = c;
+}
+
 //Функция считывания данных из файла
-void readfromfile (FILE * fp, char * p){
+void readfromfile (FILE * fp, char * p, int* space){
     char c;
+    int num = 0;
+    int z = 0;
     int i=0;
     rewind(fp);
     while((c=fgetc(fp))!=EOF)
-        if(c=='\r') p[i++]=' ';
-            else
-        p[i++]=c;
+    {
+        if(c!='\r')
+        {
+            p[i++]=c;
+            num++;
+        }
         
+        if (c == ' ' || c == '\n')
+        {
+            space[z] = (num > space[z])? num-1 : space[z];
+            num = 0;
+            if (c=='\n' || c==EOF)
+                z++;  
+        }
+    }
+    space[z] = (num > space[z])? num : space[z];
 }
 
 //Функция для транспонирования матрицы
@@ -52,18 +73,11 @@ void transpose(char*** ar, int n){
             swap(&ar[i][j], &ar[j][i]);
 }
 
-//Функция обмена значений указателей
-void swap(char **a, char **b){
-    char *c = *a;
-    *a = *b;
-    *b = c;
-}
-
 //Функция создания двумерного массива указателей
 char*** create(int num){
     char *** temp = (char ***) malloc(num * sizeof(char **));
-    for (int i=0; i<num; i++)                                   
-        temp[i] = (char **) malloc(num * sizeof(char*));        
+    for (int i=0; i<num; i++)
+        temp[i] = (char **) malloc(num * sizeof(char*));   
     return temp;   
 }
 
@@ -79,17 +93,20 @@ char*** recievePointers(char* str, char*** pointer, int num){
 }
 
 //Функция очистки массива
-void erase(char *** p, int num){
-    for (int i=0; i<num; i++)
-        free(p[i]);
-    free(p);
+void erase(char ***array3d, int num){
+    for (int i = 0; i < num; i++){
+        free(array3d[i]);
+    }
+    free(array3d);
 }
 
 //Функция записи в файл
-void FillDaFile(FILE* out, char*** ar, int n){
+void FillDaFile(FILE* out, char*** ar, int n, int* space){
+    int z = 0;
     for(int i=0; i<n; i++){
         for(int j=0; j<n; j++)
-            fprintf(out," %s", ar[i][j]);
+            fprintf(out," %*s ",space[z++], ar[i][j]);
         fprintf(out, "\r\n");
+        z=0;
     }
 }

@@ -1,6 +1,7 @@
 #include <stdio.h> 
 #include <string.h> 
 #include <stdlib.h>
+#include <errno.h>
 #include "function.h"
 
 int main(void){
@@ -22,10 +23,11 @@ int main(void){
         return 0;
     }
     
-    char *buff; 
+    char* buff;
+    int* space=(int*)calloc(clsnum,sizeof(int));
     int fsize=filesize(input);
     buff=(char*)malloc(sizeof(char)*fsize);
-    readfromfile(input, buff);
+    readfromfile(input, buff, space);
     fclose(input);
     
     char*** pointer;
@@ -34,11 +36,14 @@ int main(void){
     transpose(pointer, clsnum);
     
     FILE* output=fopen("output.txt", "w");
-    FillDaFile(output, pointer, clsnum);
-    fclose(output);
-    
+    if (!errno)
+    {
+    	FillDaFile(output, pointer, clsnum, space);
+    	fclose(output);
+    }
+    else
+        printf("Error opening output file");
     free(buff);
     erase(pointer, clsnum);
     return 0;
 }
-
