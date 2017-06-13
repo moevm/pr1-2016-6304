@@ -54,12 +54,11 @@ void readfromfile (FILE * fp, char * p, int* space){
             p[i++]=c;
             num++;
         }
-        
         if (c == ' ' || c == '\n')
         {
             space[z] = (num > space[z])? num-1 : space[z];
             num = 0;
-            if (c=='\n' || c==EOF)
+            if (c=='\n')
                 z++;  
         }
     }
@@ -103,7 +102,8 @@ void erase(char ***array3d, int num){
 //Функция записи в файл
 void FillDaFile(FILE* out, char*** ar, int n, int* space){
     int z = 0;
-    for(int i=0; i<n; i++){
+    for(int i=0; i<n; i++)
+    {
         for(int j=0; j<n; j++)
             fprintf(out," %*s ",space[z++], ar[i][j]);
         fprintf(out, "\r\n");

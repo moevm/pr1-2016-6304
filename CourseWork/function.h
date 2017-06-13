@@ -16,4 +16,3 @@ void swap(char**, char**);
 
 void erase(char ***, int);
 #endif	// FUNCTION_H
-

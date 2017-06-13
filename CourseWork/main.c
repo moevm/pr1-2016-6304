@@ -1,7 +1,6 @@
-#include <stdio.h> 
-#include <string.h> 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-#include <errno.h>
 #include "function.h"
 
 int main(void){
@@ -11,7 +10,7 @@ int main(void){
     FILE* input;
     if((input=fopen(fname, "r"))==NULL)
     {
-        printf("Error opening file");
+        perror("Error opening file");
         return 0; 
     } 
     
@@ -35,15 +34,20 @@ int main(void){
     pointer = recievePointers(buff, pointer, clsnum);
     transpose(pointer, clsnum);
     
-    FILE* output=fopen("output.txt", "w");
-    if (!errno)
-    {
-    	FillDaFile(output, pointer, clsnum, space);
-    	fclose(output);
+    FILE* output;
+    if ((output=fopen("output.txt", "w"))==NULL)
+    { 
+        perror("Error opening output file");
     }
-    else
-        printf("Error opening output file");
+    FillDaFile(output, pointer, clsnum, space);
+    if (ferror(output))
+    {
+        perror("Write error");
+    }
+    fclose(output);
+    
     free(buff);
     erase(pointer, clsnum);
+    
     return 0;
 }
