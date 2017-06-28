@@ -8,7 +8,7 @@
 
 int comp(const void* a, const void* b)
 {
-    return strcmp((*(char**)a),(*(char**)b));//compares content of strings, casted to int
+    return strcmp((*(char**)a),(*(char**)b));//compares content of strings
 }
 
 int poisk(char *homedir, char** arr, int i)
