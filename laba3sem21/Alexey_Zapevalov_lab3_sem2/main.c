@@ -4,10 +4,11 @@
 #include <string.h>
 
 #define N 20
+#define home "./root"
 
 int comp(const void* a, const void* b)
 {
-    return atoi(*(char**)a)-atoi(*(char**)b);//compares content of strings, casted to int
+    return strcmp((*(char**)a),(*(char**)b));//compares content of strings, casted to int
 }
 
 int poisk(char *homedir, char** arr, int i)
@@ -29,7 +30,7 @@ int poisk(char *homedir, char** arr, int i)
         }
         int path_len = strlen(homedir);//saves length of current directory path
         strcat(homedir,"/");
-        strcat(homedir,dir->d_name);//adding a new folders' name to previous path
+        strcat(homedir,dir->d_name);//adding a new folder's name to previous path
         if (dir->d_type == DT_DIR)
         {
             i=poisk(homedir, arr, i);//if current directory contains other directories, it calls function 'poisk' again
@@ -38,8 +39,8 @@ int poisk(char *homedir, char** arr, int i)
         {
             FILE *file;
             file = fopen(homedir, "r");
-            fgets(buf, 90, file);
-            strcpy(arr[i], buf);//reads file contents to array
+            fgets(buf, 90, file);//reads file contents into array
+            strcpy(arr[i], buf);
             i++;
             memset(buf, 0, 100);
             fclose(file);
@@ -59,13 +60,14 @@ int main() //creates array of strings, calls function to fill it, sorts strings.
         arr[i]=(char*)malloc(N*sizeof(char));//creates string for each pointer
     }
     char homedir[100];
-    strcpy(homedir, "./root"); //sets home directory
+    strcpy(homedir, home); //sets home directory
     poisk(homedir, arr, 0);//calls function to fill array
     qsort(arr, N, sizeof(char*), comp);//sorting array
     while(arr[j])
     {
-        printf("%s", arr[j]);
-        free(arr[j]);//output
+        if (arr[j][0]>48&&arr[j][0]<58) //check if the string has no numbers at the beginning
+            printf("%s", arr[j]);//output
+        free(arr[j]);
         j++;
     }
     free(arr);
