@@ -4,9 +4,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-char dir_word[100][100];
-
-int letter_file (char* start, char c)
+int letter_file (char *dir_word, char *start, char c)
 {
 	DIR *dir = opendir(start);
 	if (dir == NULL)
@@ -24,20 +22,17 @@ int letter_file (char* start, char c)
 		if (entry->d_type == DT_REG)
 		{
 			if ((c == (entry->d_name)[0]) && (strlen(entry->d_name) == 5)) 
-			{				
-				int i;													
-				for (i = 0; strlen(dir_word[i])>0; i++) 
-					if (!strcmp(current_path, dir_word[i]))
-						break;
-				if (!strlen(dir_word[i]))
+			{	
+				if(!strstr(dir_word, current_path))	
 				{
-					strcpy(dir_word[i], current_path);
+					strcat(dir_word, current_path);
+					strcat(dir_word, "\n");
 					flag = 1;
-				}
+				}		
 			}								
 		}			
 		else if (entry->d_type == DT_DIR)
-			flag = letter_file(current_path, c);
+			flag = letter_file(dir_word, current_path, c);
 		current_path[strlen(current_path) - strlen(entry->d_name)-1] = '\0';
 	}
 	closedir(dir);
@@ -46,32 +41,27 @@ int letter_file (char* start, char c)
 
 int main (int c, char** vr)
 {
+	char dir_word[10000];
 	char word[100];
 	int err;
 	if (c != 2)
 	{
 		printf ("Wrong input!\n");
-		exit(1);
+		return 0;
 	}
 	if (vr[1][strlen(vr[1])-1] == '/')
 		vr[1][strlen(vr[1])-1] = '\0';
 	scanf("%s", word);
+
 	for (int i = 0; i < strlen(word); i++)
 	{
-		err = letter_file(vr[1], word[i]);
-		if (err < 0)
+		err = letter_file(dir_word, vr[1], word[i]);
+		switch (err)
 		{
-			printf ("Wrong directory!\n");
-			exit(-1);
-		}
-		else if (!err)
-		{
-			printf ("Sorry, but i can do nothing with this word.\n");
-			exit (0);
+			case -1: printf ("Wrong directory!\n"); return 0;
+			case 0: printf ("Sorry, but i can do nothing with this word.\n"); return 0; 
 		}
 	}
-	for (int i = 0; strlen(dir_word[i]); i++)
-		printf ("%s\n", dir_word[i]);
+	printf ("%s", dir_word);
 	return 0;
-
 }
