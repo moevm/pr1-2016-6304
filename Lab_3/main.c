@@ -85,14 +85,14 @@ int filePath(char *startdir, char files[][PLEN], int* fnum, char* file){
 char *read(const char *current_path, int *file_size)
 {
     FILE *file=fopen(current_path,"rt");
-    /*Определение размера файла*/
+    
     fseek(file,0, SEEK_END);
     *file_size = ftell(file);
     fseek(file,0, SEEK_SET);
     
     char *str=(char*)malloc(sizeof(char)*(*file_size));
     int i=0;
-    /*Посимвольное копирование из файла в строку*/
+    
     char symb;
     while(fscanf(file,"%c",&symb)>0) str[i++]=symb;
     fclose(file);
