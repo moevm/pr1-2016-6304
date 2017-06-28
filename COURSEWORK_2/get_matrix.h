@@ -1,0 +1,1 @@
+int *get_matrix (char *, int *, int *);
