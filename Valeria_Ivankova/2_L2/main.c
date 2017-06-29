@@ -1,110 +1,126 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
-#define N 600
-typedef struct index{
-    int a;
-    struct index *next;
-    struct index *prev;
-}index;
 
-index* stackInit(index* stack){ 
-    stack = (index*)malloc(sizeof(index));
-    stack->prev = NULL;
-    return stack;
-}
+#define MAX_STACK 100 //Определяем максимальный размер массива 
+typedef int N; //Тип данных, которые будут храниться в данном массиве
 
-index* push(index* stack, int a){ 
-    if (stack!=NULL){
-        stack->a = a;
-        stack->next = (index*)malloc(sizeof(index));
-        stack->next->prev=stack;
-        stack = stack->next;
-        return stack;
-    }
-    return NULL;
+typedef struct index
+{
+  N a[MAX_STACK]; // Размер типа для того, чтобы в него можно было записать максимальный размер теоретически возможного массива любого типа
+  N size; // количество элементов, и вместе с тем указатель на вершину стека
+   
+  // Вершина будет указывать на следующий элемент массива, в который будет занесено значение.
+  
+} index;
+
+void push(index *stack, const N value)
+{
+  stack->a[stack->size] = value; //указатель на структуру
+  stack->size++;
 }
 
 
-
-void pop(index** stack2, int* a){
-    index* stack = *stack2;
-    if (stack!=NULL){
-        if (stack->prev!=NULL){
-            *a=stack->prev->a;
-            stack = stack->prev;
-            free(stack->next);
-            *stack2 = stack;
-
-        }
-        else {
-            free(*stack2);
-            *stack2 = NULL;
-        }
-    }
+int pop(index *stack)
+{
+  stack->size--;
+  return stack->a[stack->size];
 }
 
-int size(index* stack){
-    int i=0;
-    while (stack->prev!=NULL){
-        i++;
-        stack = stack->prev;
-    }
-    return i;
+int sizeStack(index  *stack)
+  {
+  return  stack->size;
+  }
+
+int top(const index *stack)
+{
+
+    return stack->a[stack->size - 1];
 }
 
-int getLastTwo(index** stack, int *a, int *b){ 
-    pop(stack, a);
-    if (*stack!= NULL){
-        pop(stack, b);
-        if (*stack!=NULL){
-            return 0;
-        }
-    }
+int funct(index *stack, char c)
+{
+  if (stack->size == 0 || stack->size == 1  )
+  {
     return 1;
+  }
+ int a, b;
+
+
+if(sizeStack(stack) != 0)
+{
+ a=top(stack);
+ pop(stack);
+
+ b=top(stack);
+ pop(stack);
 }
+ int result;
+ switch(c)
+ {
+ 	case '+': { 
+ 		result = b+a; 
+ 		break;
+ 		}
+ 	case '-': { 
+ 		result = b-a; 
+ 		break;
+ 		}
+ 	case '*': { 
+ 		result = b*a;
+ 		break;
+ 		}
+ 	case '/': { 
+ 		result = b/a; 
+ 		break;
+ 		}
+ }
+ push(stack, result);
+ return 0;
+}
+
 
 int main()
 {
-    int a; int b; int end= 0;
-    char* str = (char*)malloc(N*sizeof(char));
-    fgets(str, N, stdin); 
-    index* stack = NULL;
-    char *k = strtok(str, " ");
-    while ((k!=NULL) && (end == 0)){ 
-        switch (k[0]){
-            case '+':
-                end = getLastTwo(&stack, &a, &b);
-                stack = push(stack, a+b);
-                break;
-            case '*':
-                end = getLastTwo(&stack, &a, &b);
-                stack = push(stack, a*b);
-                break;
-            case '/':
-                end = getLastTwo(&stack, &a, &b);
-                stack = push(stack, b/a);
-                break;
-            default:
-                if ((k[0]=='-') && ((k[1] == '\0') || (k[1] == '\n'))){ 
-                    end = getLastTwo(&stack, &a, &b); 
-                    stack = push(stack, b-a);
-                }
-                else{
-                    if (stack == NULL) 
-                        stack = stackInit(stack); 
-                    stack = push(stack, atoi(k));
-                }
-                break;
-        }
-        k = strtok(NULL, " ");
-    }
-    if ((end == 1) || (size(stack)!=1))
-        printf("error\n");
-    else
-        printf("%d", stack->prev->a);
-    while (stack!=NULL){
-       pop(&stack, &a);
-    }
-    return 0;
+index stack;
+stack.size=0;
+char str[100];
+int control = 1;
+
+fgets(str, 100, stdin);
+char* str1 = strtok(str, " "); //разбиение на лексемы
+
+while(str1 != NULL)
+{
+  if(isdigit(*str1)) //проверяет аргумент, является ли он десятичной цифрой
+      push(&stack, atoi(str1));
+
+      else
+
+  if(strlen(str1) > 1) //если число двузначное или больше
+  {
+      push(&stack, atoi(str1));
+  }
+
+      else
+  if(strlen(str1) == 1) //если это символ, то 
+  {
+      if(funct(&stack, *str1) == 1)
+      control = 1;
+  }
+
+  str1 = strtok(NULL, " \n");
+}
+
+if(sizeStack(&stack) == 1)
+  printf("%d\n", top(&stack));
+else
+{
+  control = 1;
+  printf("error");
+  return 0;
+}
+
+return 0;
 }
