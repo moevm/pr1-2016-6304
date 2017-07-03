@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1498654428 source:/home/bi/proekt/codeblocks/proekt/main.c
+	<stdio.h>
+	<sys/types.h>
+	<dirent.h>
+	<string.h>
+	<stdlib.h>
+
